@@ -4,3 +4,10 @@ client/out/
 client/.env*
 .DS_Store
 npm-debug.log*
+node_modules/
+.next/
+out/
+.env*
+.env.local
+AGENTS.md
+CLAUDE.md
