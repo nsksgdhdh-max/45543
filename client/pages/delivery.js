@@ -1,4 +1,7 @@
+import Head from 'next/head'
 import Header from '../components/Header'
+
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 const faqItems = [
   {
@@ -104,9 +107,18 @@ const faqItems = [
 ]
 
 export default function Delivery() {
+  const canonicalUrl = `${CANONICAL_BASE}/delivery`
+
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <Header />
+    <>
+      <Head>
+        <title>Bestellung & Lieferung — LebensKraft</title>
+        <meta name="description" content="Wie funktioniert die Bestellung und Lieferung bei LebensKraft? Persönliche Beratung, Anfrage, Lieferung und weitere Schritte in Deutschland." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div className="min-h-screen bg-white text-slate-900">
+        <Header />
 
       <main>
         {/* Hero */}
@@ -441,5 +453,6 @@ export default function Delivery() {
         </section>
       </main>
     </div>
+    </>
   )
 }

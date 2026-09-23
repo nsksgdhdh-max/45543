@@ -1,9 +1,12 @@
+import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { addToCartAndGo } from '../lib/cart'
 import { buildProductUrl, resolveProductImage } from '../lib/product'
+
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 export default function OffersPage() {
   const router = useRouter()
@@ -24,24 +27,33 @@ export default function OffersPage() {
     return ''
   }
 
-  return (
-    <div>
-      <Header />
-      <main className="max-w-5xl mx-auto p-4">
-        <h1 className="text-2xl font-bold">Офферы Nutra — Германия (без лендинга)</h1>
+  const canonicalUrl = `${CANONICAL_BASE}/offers`
 
-        {!data && <p>Загрузка...</p>}
-        {data && data.error && <p className="error">Ошибка: {data.error}</p>}
+  return (
+    <>
+      <Head>
+        <title>Offers — LebensKraft</title>
+        <meta name="description" content="Aktuelle Angebote und Produkte bei LebensKraft für Deutschland." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div>
+        <Header />
+      <main className="max-w-5xl mx-auto p-4">
+        <h1 className="text-2xl font-bold">Nutra-Angebote — Deutschland (ohne Landingpage)</h1>
+
+        {!data && <p>Lädt...</p>}
+        {data && data.error && <p className="error">Fehler: {data.error}</p>}
 
         {data && !data.error && (
           <>
-            <p className="mt-2 text-sm text-gray-600">Найдено: {data.count}</p>
+            <p className="mt-2 text-sm text-gray-600">Gefunden: {data.count}</p>
 
             {/* category filters */}
             <div style={{marginTop:10,marginBottom:10}}>
               {['all', ...Array.from(new Set((data.offers||[]).map((x)=>x.category || 'other')))].map((c) => (
                 <button key={c} onClick={() => setCategory(c)} style={{marginRight:8, padding:'6px 10px', background: category===c? 'var(--accent)' : '#f3f3f3', color: category===c? '#fff' : '#333', borderRadius:6, border:'none'}}>
-                  {c === 'all' ? 'Все' : c}
+                  {c === 'all' ? 'Alle' : c}
                 </button>
               ))}
             </div>
@@ -87,11 +99,11 @@ export default function OffersPage() {
                           }}
                           className="flex-1 rounded-full bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
                         >
-                          В корзину
+                          In den Warenkorb
                         </button>
-                        <Link href={buildProductUrl(o)} className="flex-1 rounded-full border border-slate-200 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" onClick={(event) => event.stopPropagation()}>Подробнее</Link>
+                        <Link href={buildProductUrl(o)} className="flex-1 rounded-full border border-slate-200 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" onClick={(event) => event.stopPropagation()}>Mehr erfahren</Link>
                       </div>
-                      <Link href={{ pathname: '/form', query: { product_id: o.product_id, name: o.name, price: priceForDE(o), img: o.img } }} className="rounded-full bg-slate-950 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-slate-800" onClick={(event) => event.stopPropagation()}>Купить</Link>
+                      <Link href={{ pathname: '/form', query: { product_id: o.product_id, partner_id: o.partner_id || 'metacpa_default', name: o.name, price: priceForDE(o), img: o.img } }} className="rounded-full bg-slate-950 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-slate-800" onClick={(event) => event.stopPropagation()}>Kaufen</Link>
                     </div>
                   </div>
                 </div>
@@ -101,5 +113,6 @@ export default function OffersPage() {
         )}
       </main>
     </div>
+    </>
   )
 }

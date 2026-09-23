@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/Header'
@@ -7,6 +8,8 @@ import {
   removeFromCart,
   updateCartQty,
 } from '../lib/cart'
+
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 export default function CartPage() {
   const [items, setItems] = useState([])
@@ -71,10 +74,19 @@ export default function CartPage() {
     refresh()
   }
 
+  const canonicalUrl = `${CANONICAL_BASE}/cart`
+
   if (!items.length) {
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900">
-        <Header />
+      <>
+        <Head>
+          <title>Warenkorb — LebensKraft</title>
+          <meta name="description" content="Warenkorbansicht bei LebensKraft." />
+          <link rel="canonical" href={canonicalUrl} />
+        </Head>
+
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+          <Header />
 
         <main className="mx-auto flex min-h-[75vh] max-w-5xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
           <div className="w-full max-w-lg rounded-[2rem] bg-white px-6 py-14 text-center shadow-sm ring-1 ring-gray-200 sm:px-10">
@@ -96,28 +108,36 @@ export default function CartPage() {
             </div>
 
             <h1 className="mt-6 text-3xl font-black tracking-tight text-gray-900">
-              Ваша корзина пуста
+              Ihr Warenkorb ist leer
             </h1>
 
             <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500">
-              Добавьте понравившиеся товары в корзину, чтобы оформить заказ.
+              Fügen Sie Produkte hinzu, um eine Bestellung zu senden.
             </p>
 
             <Link
               href="/categories"
               className="mt-8 inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
             >
-              Перейти в каталог
+              Zum Katalog
             </Link>
           </div>
         </main>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <Header />
+    <>
+      <Head>
+        <title>Warenkorb — LebensKraft</title>
+        <meta name="description" content="Warenkorbansicht bei LebensKraft." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        <Header />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
 
@@ -125,20 +145,20 @@ export default function CartPage() {
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">
-              Ваш заказ
+              Ihre Bestellung
             </p>
 
             <h1 className="mt-1 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">
-              Корзина
+              Warenkorb
             </h1>
 
             <p className="mt-2 text-sm text-gray-500">
               {totalItems}{' '}
               {totalItems === 1
-                ? 'товар'
+                ? 'Produkt'
                 : totalItems >= 2 && totalItems <= 4
-                  ? 'товара'
-                  : 'товаров'}
+                  ? 'Produkt'
+                  : 'Produkte'}
             </p>
           </div>
 
@@ -162,7 +182,7 @@ export default function CartPage() {
               />
             </svg>
 
-            Очистить корзину
+            Warenkorb leeren
           </button>
         </div>
 
@@ -183,12 +203,12 @@ export default function CartPage() {
                 >
                   <div className="flex gap-4 sm:gap-5">
 
-                    {/* Фото */}
+                    {/* Bild */}
                     <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-gray-100 sm:h-36 sm:w-36">
                       {item.img ? (
                         <img
                           src={item.img}
-                          alt={item.name || 'Товар'}
+                          alt={item.name || 'Produkt'}
                           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                         />
                       ) : (
@@ -221,7 +241,7 @@ export default function CartPage() {
                         <button
                           type="button"
                           onClick={() => handleRemove(item)}
-                          aria-label="Удалить товар"
+                          aria-label="Удалить Produkt"
                           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-400 transition hover:bg-red-50 hover:text-red-500"
                         >
                           <svg
@@ -241,24 +261,24 @@ export default function CartPage() {
                         </button>
                       </div>
 
-                      {/* Цена */}
+                      {/* Preis */}
                       <div className="mt-2">
                         <span className="text-sm text-gray-500">
-                          Цена за 1 шт.
+                          Preis pro Stück
                         </span>
 
                         <div className="mt-0.5 text-lg font-bold text-gray-900">
-                          {item.price || 'Цена по запросу'}
+                          {item.price || 'Preis auf Anfrage'}
                         </div>
                       </div>
 
                       {/* Низ карточки */}
                       <div className="mt-auto flex flex-col gap-3 pt-4 sm:flex-row sm:items-end sm:justify-between">
 
-                        {/* Количество */}
+                        {/* Menge */}
                         <div>
                           <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-gray-400">
-                            Количество
+                            Menge
                           </p>
 
                           <div className="flex w-fit items-center rounded-xl border border-gray-200 bg-gray-50 p-1">
@@ -284,10 +304,10 @@ export default function CartPage() {
                           </div>
                         </div>
 
-                        {/* Сумма товара */}
+                        {/* Gesamt Produktа */}
                         <div className="text-left sm:text-right">
                           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-                            Сумма
+                            Gesamt
                           </p>
 
                           <p className="mt-1 text-xl font-black text-indigo-600">
@@ -306,13 +326,13 @@ export default function CartPage() {
           <aside className="lg:sticky lg:top-24">
             <div className="rounded-[1.75rem] bg-white p-5 shadow-sm ring-1 ring-gray-200 sm:p-6">
               <h2 className="text-xl font-black text-gray-900">
-                Сумма заказа
+                Bestellsumme
               </h2>
 
               <div className="mt-6 space-y-4">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">
-                    Товары
+                    Produkte
                   </span>
 
                   <span className="font-semibold text-gray-900">
@@ -322,18 +342,18 @@ export default function CartPage() {
 
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">
-                    Доставка
+                    Lieferung
                   </span>
 
                   <span className="font-semibold text-emerald-600">
-                    Рассчитывается при заказе
+                    Bei Bestellung berechnet
                   </span>
                 </div>
 
                 <div className="border-t border-gray-100 pt-4">
                   <div className="flex items-end justify-between gap-4">
                     <span className="text-base font-semibold text-gray-700">
-                      Итого
+                      Gesamt
                     </span>
 
                     <span className="text-3xl font-black tracking-tight text-gray-900">
@@ -347,7 +367,7 @@ export default function CartPage() {
                 href="/form"
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]"
               >
-                Оформить заказ
+                Bestellung abschließen
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -369,7 +389,7 @@ export default function CartPage() {
                 href="/categories"
                 className="mt-3 flex w-full items-center justify-center rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
               >
-                Продолжить покупки
+                Einkauf fortsetzen
               </Link>
 
               <div className="mt-6 rounded-2xl bg-gray-50 p-4">
@@ -393,11 +413,11 @@ export default function CartPage() {
 
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
-                      Ваши товары сохранены
+                      Ihre Produkte wurden gespeichert
                     </p>
 
                     <p className="mt-1 text-xs leading-5 text-gray-500">
-                      Количество товаров можно изменить прямо в корзине.
+                      Die Produktmenge kann direkt im Warenkorb geändert werden.
                     </p>
                   </div>
                 </div>
@@ -407,5 +427,6 @@ export default function CartPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

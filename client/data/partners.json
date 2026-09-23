@@ -1,0 +1,56 @@
+[
+  {
+    "id": "metacpa_default",
+    "name": "MetaCPA default",
+    "lead_url": "https://metacpa.ru/create",
+    "lead_method": "GET",
+    "flow_hash": "",
+    "api_key": "",
+    "token": "",
+    "webmaster_id": "993341",
+    "extra_fields": {
+      "sub1": "partner_id",
+      "sub2": "product_id",
+      "sub3": "product_name",
+      "sub4": "product_price",
+      "sub5": "product_img"
+    },
+    "active": true
+  },
+  {
+    "id": "metacpa",
+    "name": "MetaCPA",
+    "lead_url": "https://metacpa.ru/create",
+    "lead_method": "POST",
+    "flow_hash": "RuWdMgOkfeV7Kvu",
+    "api_key": "",
+    "token": "76MKRd2WDd0DEdBgaNcYXn3jYLpNOwTNtDcSx1rba3lwOgq32xGnHhGSyhB5MTzU",
+    "webmaster_id": "",
+    "extra_fields": {
+      "sub1": "partner_id",
+      "sub2": "product_id",
+      "sub3": "product_name",
+      "sub4": "product_price",
+      "sub5": "product_img"
+    },
+    "active": true
+  },
+  {
+    "id": "m1",
+    "name": "M1 legacy",
+    "lead_url": "https://m1.top/send_order/",
+    "lead_method": "POST",
+    "flow_hash": "",
+    "api_key": "",
+    "token": "",
+    "webmaster_id": "993341",
+    "extra_fields": {
+      "sub1": "partner_id",
+      "sub2": "product_id",
+      "sub3": "product_name",
+      "sub4": "product_price",
+      "sub5": "product_img"
+    },
+    "active": true
+  }
+]

@@ -1,10 +1,22 @@
 
+import Head from 'next/head'
 import Header from '../components/Header'
 
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export default function Warranty() {
+  const canonicalUrl = `${CANONICAL_BASE}/warranty`
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <>
+      <Head>
+        <title>Gewährleistung und Garantie — LebensKraft</title>
+        <meta name="description" content="Informationen zur Gewährleistung und Garantie für Produkte bei LebensKraft." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div className="min-h-screen bg-gray-50">
+        <Header />
 
       <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <article className="rounded-xl bg-white px-4 py-6 shadow-sm sm:px-8 sm:py-9 lg:px-12 lg:py-12">
@@ -223,5 +235,6 @@ export default function Warranty() {
         </article>
       </main>
     </div>
+    </>
   )
 }

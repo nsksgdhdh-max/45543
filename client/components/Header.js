@@ -1,11 +1,21 @@
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { getCartCount } from '../lib/cart'
 
 export default function Header() {
+  const router = useRouter()
   const [cartCount, setCartCount] = useState(0)
   const [mobileMenu, setMobileMenu] = useState(false)
+
+  const handleMobileNavClick = (href) => {
+    setMobileMenu(false)
+
+    if (router.asPath !== href) {
+      router.push(href)
+    }
+  }
 
   useEffect(() => {
     const updateCart = () => {
@@ -22,6 +32,22 @@ export default function Header() {
       window.removeEventListener('cart:updated', updateCart)
     }
   }, [])
+
+  useEffect(() => {
+    const handleRouteChangeStart = () => {
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        setMobileMenu(false)
+      }
+    }
+
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+    router.events.on('hashChangeStart', handleRouteChangeStart)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+      router.events.off('hashChangeStart', handleRouteChangeStart)
+    }
+  }, [router.events])
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-xl">
@@ -191,61 +217,61 @@ export default function Header() {
           <div className="border-t border-gray-100 py-4 lg:hidden">
             <div className="flex flex-col gap-1">
 
-              <Link
-                href="/"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Startseite
-              </Link>
+              </button>
 
-              <Link
-                href="/categories"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/categories')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Kategorien
-              </Link>
+              </button>
 
-              <Link
-                href="/news"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/news')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 News
-              </Link>
+              </button>
 
-              <Link
-                href="/about"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/about')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Über uns
-              </Link>
+              </button>
 
-              <Link
-                href="/delivery"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/delivery')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Lieferung
-              </Link>
+              </button>
 
-              <Link
-                href="/warranty"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/warranty')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Garantie
-              </Link>
+              </button>
 
-              <Link
-                href="/contact"
-                onClick={() => setMobileMenu(false)}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/contact')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Kontakte
-              </Link>
+              </button>
 
             </div>
           </div>

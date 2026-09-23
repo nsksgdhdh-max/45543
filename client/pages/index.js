@@ -1,30 +1,37 @@
+import Head from 'next/head'
 import Header from '../components/Header'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import products from '../data/specific_products.json'
 import { addToCartAndGo } from '../lib/cart'
-import { buildCatalogGroups, buildSubcategoryGroups } from '../lib/catalog'
+import { buildCatalogGroups } from '../lib/catalog'
 import { readNews } from '../lib/news'
-import { buildProductUrl, resolveProductImage, toEnglishSlug } from '../lib/product'
+import { buildProductUrl, resolveProductImage } from '../lib/product'
+
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 const categoryLabels = {
-  kapsula: 'Капсулы',
-  kapli: 'Капли',
-  krem: 'Крем',
-  sprey: 'Спрей',
-  gel: 'Гель',
-  other: 'Другое',
+  kapsula: 'Kapseln',
+  kapli: 'Tropfen',
+  krem: 'Creme',
+  sprey: 'Spray',
+  gel: 'Gel',
+  other: 'Sonstige',
 }
 
 function priceForDE(item) {
   const target = Array.isArray(item.target) ? item.target : []
   const de = target.find((x) => String(x.code || '').toUpperCase() === 'DE') || target[0]
-  if (!de) return 'Цена по запросу'
+  if (!de) return 'Preis auf Anfrage'
   return `${de.price || ''} ${de.currency || ''}`.trim()
 }
 
 const categories = buildCatalogGroups(products)
-const subcategoryHighlights = buildSubcategoryGroups(products).slice(0, 6)
+const rankedCategories = [...categories].sort((a, b) => (b.count || 0) - (a.count || 0) || String(a.name).localeCompare(String(b.name)))
+const visibleCategoryCards = [
+  ...rankedCategories.filter((category) => category.slug === 'skin'),
+  ...rankedCategories.filter((category) => category.slug !== 'skin').slice(0, 7),
+]
 
 const featuredBase = (products || []).filter((item) => Number(item.top) === 1)
 const featured = (featuredBase.length ? featuredBase : (products || [])).map((item) => ({
@@ -34,7 +41,7 @@ const featured = (featuredBase.length ? featuredBase : (products || [])).map((it
 const heroOffer = (products || []).find((item) => Number(item.main_offer) === 1)
   || (products || []).find((item) => Number(item.top) === 1)
   || (products || [])[0]
-const heroOfferPrice = heroOffer ? priceForDE(heroOffer) : 'Цена по запросу'
+const heroOfferPrice = heroOffer ? priceForDE(heroOffer) : 'Preis auf Anfrage'
 const heroIsNew = Number(heroOffer?.main_offer) === 1 || Number(heroOffer?.new) === 1
 
 const homepageFaq = [
@@ -62,10 +69,18 @@ const homepageFaq = [
 
 export default function Home({ news = [] }) {
   const router = useRouter()
+  const canonicalUrl = `${CANONICAL_BASE}/`
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-900">
-      <Header />
+    <>
+      <Head>
+        <title>LebensKraft — Gesundheit, Schönheit und Wohlbefinden</title>
+        <meta name="description" content="LebensKraft ist ein Gesundheits-Shop mit Produkten für Gesundheit, Wohlbefinden und Alltag in Deutschland." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-900">
+        <Header />
 
       <main className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 lg:px-8">
         <section className="grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
@@ -82,15 +97,7 @@ export default function Home({ news = [] }) {
               Entdecken Sie geprüfte Produkte aus unserem Sortiment, vergleichen Sie Kategorien einfach und kaufen Sie schnell und bequem.
             </p>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black text-slate-900">{products.length}</div>
-                <div className="text-sm text-slate-500">Produkte im Sortiment</div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black text-slate-900">{categories.length}</div>
-                <div className="text-sm text-slate-500">Kategorien</div>
-              </div>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="text-2xl font-black text-slate-900">3–7 Tage</div>
                 <div className="text-sm text-slate-500">Lieferung</div>
@@ -136,14 +143,14 @@ export default function Home({ news = [] }) {
                   onClick={() => heroOffer && addToCartAndGo({ ...heroOffer, price: heroOfferPrice })}
                   className="rounded-full bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-500 sm:px-5 sm:text-sm"
                 >
-                  В корзину
+                  In den Warenkorb
                 </button>
                 <button
                   type="button"
                   onClick={() => heroOffer && router.push(buildProductUrl(heroOffer))}
                   className="rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 sm:px-5 sm:text-sm"
                 >
-                  Подробнее
+                  Mehr erfahren
                 </button>
               </div>
             </div>
@@ -161,65 +168,30 @@ export default function Home({ news = [] }) {
             </Link>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {categories.slice(0, 4).map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/categories/${category.slug}`}
-                  className="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-                >
-                  <div className="relative h-44 overflow-hidden bg-slate-100 sm:h-52">
-                    <img src={resolveProductImage(category.image)} alt={category.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" onError={(event) => {
-                      event.currentTarget.onerror = null
-                      event.currentTarget.src = '/img/placeholder.svg'
-                    }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-slate-900/10 to-transparent" />
-                  </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-5">
+            {visibleCategoryCards.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/categories/${category.slug}`}
+                className="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div className="relative h-44 overflow-hidden bg-slate-100 sm:h-52">
+                  <img src={resolveProductImage(category.image)} alt={category.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" onError={(event) => {
+                    event.currentTarget.onerror = null
+                    event.currentTarget.src = '/img/placeholder.svg'
+                  }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-slate-900/10 to-transparent" />
+                </div>
 
-                  <div className="p-4 sm:p-5">
-                    <div className="mb-3 flex items-center justify-between gap-2">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700 sm:text-xs">
-                        {category.count} Produkte
-                      </span>
-                      <span className="text-xs font-semibold text-indigo-600 sm:text-sm">Mehr</span>
-                    </div>
-                    <span className="block text-xl font-bold text-slate-900 sm:text-2xl">{category.name}</span>
+                <div className="p-4 sm:p-5">
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <span className="sr-only">{category.name}</span>
+                    <span className="text-xs font-semibold text-indigo-600 sm:text-sm">Mehr</span>
                   </div>
-                </Link>
-              ))}
-            </div>
-
-            <div className="grid gap-3 sm:gap-4">
-              {subcategoryHighlights.map((subcategory) => (
-                <Link
-                  key={`${subcategory.family}-${subcategory.label}`}
-                  href={`/categories/${subcategory.family}/${toEnglishSlug(subcategory.label)}`}
-                  className="group flex items-center gap-3 overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:gap-4 sm:p-3"
-                >
-                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[0.9rem] bg-slate-100 sm:h-20 sm:w-20">
-                    <img
-                      src={resolveProductImage(subcategory.image)}
-                      alt={subcategory.label}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      loading="lazy"
-                      onError={(event) => {
-                        event.currentTarget.onerror = null
-                        event.currentTarget.src = '/img/placeholder.svg'
-                      }}
-                    />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-[10px]">Unterkategorie</div>
-                    <span className="mt-1 block line-clamp-2 text-base font-bold text-slate-900 sm:text-lg">{subcategory.label}</span>
-                    <div className="mt-1 text-xs text-slate-500 sm:text-sm">{subcategory.count} Produkte</div>
-                  </div>
-
-                  <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold text-indigo-700 sm:px-3 sm:text-xs">Jetzt</span>
-                </Link>
-              ))}
-            </div>
+                  <span className="block text-xl font-bold text-slate-900 sm:text-2xl">{category.name}</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 
@@ -252,24 +224,24 @@ export default function Home({ news = [] }) {
           </div>
         </section>
 
-        <section className="mt-16 rounded-[2rem] border border-slate-200 bg-slate-900 p-6 text-white shadow-[0_30px_80px_-35px_rgba(15,23,42,0.75)] sm:mt-20 sm:p-8">
-          <div className="mb-6 max-w-2xl sm:mb-8">
+        <section className="mt-16 rounded-[2rem] border border-slate-200 bg-slate-900 p-4 text-white shadow-[0_30px_80px_-35px_rgba(15,23,42,0.75)] sm:mt-20 sm:p-8">
+          <div className="mb-4 max-w-2xl sm:mb-6">
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300 sm:text-xs">Finden Sie die Lösung</p>
-            <h2 className="mt-2 text-2xl font-black sm:text-3xl">Praktische Empfehlungen für unterschiedliche Bedürfnisse</h2>
+            <h2 className="mt-2 text-xl font-black leading-tight sm:text-3xl">Praktische Empfehlungen für unterschiedliche Bedürfnisse</h2>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">Metabolismus und Diabetes</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-300">Entdecken Sie passende Lösungen und finden Sie schnell die richtige Auswahl für Ihren Alltag.</p>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-5">
+              <h3 className="text-lg font-bold text-white sm:text-2xl">Metabolismus und Diabetes</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300 sm:mt-3 sm:leading-7">Entdecken Sie passende Lösungen und finden Sie schnell die richtige Auswahl für Ihren Alltag.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">Männliche Gesundheit</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-300">Erfahren Sie mehr über bewährte Produkte und entdecken Sie passende Empfehlungen zu Ihren Bedürfnissen.</p>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-5">
+              <h3 className="text-lg font-bold text-white sm:text-2xl">Männliche Gesundheit</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300 sm:mt-3 sm:leading-7">Erfahren Sie mehr über bewährte Produkte und entdecken Sie passende Empfehlungen zu Ihren Bedürfnissen.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">Verdauung und Magen</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-300">Wählen Sie gezielt Produkte aus, die für Ihre Gesundheit und Ihr Wohlbefinden sinnvoll sind.</p>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-5">
+              <h3 className="text-lg font-bold text-white sm:text-2xl">Verdauung und Magen</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300 sm:mt-3 sm:leading-7">Wählen Sie gezielt Produkte aus, die für Ihre Gesundheit und Ihr Wohlbefinden sinnvoll sind.</p>
             </div>
           </div>
         </section>
@@ -290,20 +262,31 @@ export default function Home({ news = [] }) {
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {news.map((item) => (
-                <article key={item.id || item.createdAt} className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm">
-                  {item.image ? (
-                    <img src={item.image} alt={item.title} className="h-52 w-full object-cover" loading="lazy" />
-                  ) : (
-                    <div className="flex h-52 items-center justify-center bg-slate-100 text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">News</div>
-                  )}
-                  <div className="p-5">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                      {new Date(item.createdAt).toLocaleDateString('ru-RU')}
+                <Link
+                  key={item.slug || item.id || item.createdAt}
+                  href={`/news/${encodeURIComponent(item.slug || item.id || item.createdAt)}`}
+                  className="group block overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  aria-label={`News lesen: ${item.title}`}
+                >
+                  <article className="h-full">
+                    {item.image ? (
+                      <img src={item.image} alt={item.title} className="h-52 w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+                    ) : (
+                      <div className="flex h-52 items-center justify-center bg-slate-100 text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">News</div>
+                    )}
+                    <div className="p-5">
+                      <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        {new Date(item.createdAt).toLocaleDateString('ru-RU')}
+                      </div>
+                      <h3 className="mt-3 text-2xl font-bold text-slate-900 transition group-hover:text-indigo-600">{item.title}</h3>
+                      {item.excerpt && <p className="mt-3 text-sm leading-6 text-slate-600">{item.excerpt}</p>}
+                      <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-indigo-600">
+                        Weiterlesen
+                        <span aria-hidden="true">→</span>
+                      </div>
                     </div>
-                    <h3 className="mt-3 text-2xl font-bold text-slate-900">{item.title}</h3>
-                    {item.excerpt && <p className="mt-3 text-sm leading-6 text-slate-600">{item.excerpt}</p>}
-                  </div>
-                </article>
+                  </article>
+                </Link>
               ))}
             </div>
           </section>
@@ -317,26 +300,18 @@ export default function Home({ news = [] }) {
             <h2 className="mt-2 text-3xl font-black text-slate-900">Beliebte Produkte</h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {featured.map((item) => (
-              <article
+              <Link
                 key={item.product_id || item.id}
-                onClick={() => router.push(buildProductUrl(item))}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    router.push(buildProductUrl(item))
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className="flex h-full cursor-pointer flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                href={buildProductUrl(item)}
+                className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="relative flex h-52 items-center justify-center bg-slate-100">
                   <img
                     src={resolveProductImage(item.img)}
                     alt={item.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     loading="lazy"
                     onError={(event) => {
                       event.currentTarget.onerror = null
@@ -349,32 +324,42 @@ export default function Home({ news = [] }) {
                     </span>
                   )}
                 </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{categoryLabels[item.category] || item.category || 'Товар'}</p>
-                  <h3 className="mt-2 text-lg font-bold text-slate-900">{item.name}</h3>
 
-                  <div className="mt-5 flex items-center justify-between gap-3">
-                    <span className="text-xl font-black text-indigo-600">{item.displayPrice}</span>
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  <div className="block">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">{categoryLabels[item.category] || item.category || 'Produkt'}</p>
+                    <span className="mt-2 block text-sm font-bold leading-5 text-slate-900 transition group-hover:text-indigo-600 sm:text-base">{item.name}</span>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 flex-col">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Preis</span>
+                      <span className="text-base font-black tracking-[-0.03em] text-slate-900 sm:text-lg">
+                        {item.displayPrice?.replace(/\s+([A-Za-z]{3,})$/, ' $1') || item.displayPrice}
+                      </span>
+                    </div>
                     <button
                       type="button"
                       onClick={(event) => {
+                        event.preventDefault()
                         event.stopPropagation()
                         addToCartAndGo({ ...item, price: item.displayPrice })
                       }}
-                      className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500"
+                      aria-label={`In den Warenkorb: ${item.name}`}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-lg text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 sm:h-11 sm:w-11"
                     >
-                      In den Warenkorb
+                      🛒
                     </button>
                   </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
 
         <div className="mt-8 rounded-[1.5rem] border border-slate-200 bg-white p-5 sm:p-6">
-  <h3 className="text-lg font-black text-slate-900">
+  <Link href="/categories" className="block text-lg font-black text-slate-900 transition hover:text-blue-600">
     Beliebte Kategorien
-  </h3>
+  </Link>
 
   <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {categories.slice(0, 8).map((category) => (
@@ -390,7 +375,8 @@ export default function Home({ news = [] }) {
 </div>
         </section>
       </main>
-    </div>
+      </div>
+    </>
   )
 }
 

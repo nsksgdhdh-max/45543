@@ -1,15 +1,27 @@
+import Head from 'next/head'
 import fs from 'fs'
 import path from 'path'
 import Header from '../components/Header'
 import Link from 'next/link'
 
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export default function SpecialOffers({ products }) {
+  const canonicalUrl = `${CANONICAL_BASE}/special-offers`
+
   return (
-    <div>
-      <Header />
+    <>
+      <Head>
+        <title>Ausgewählte Produkte — LebensKraft</title>
+        <meta name="description" content="Ausgewählte Produkte und Empfehlungen von LebensKraft." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div>
+        <Header />
       <main className="max-w-5xl mx-auto p-4">
-        <h1 className="text-2xl font-bold">Выбранные товары</h1>
-        <p className="text-sm text-gray-600 mt-1">Загружено: {products.length}</p>
+        <h1 className="text-2xl font-bold">Ausgewählte Produkte</h1>
+        <p className="text-sm text-gray-600 mt-1">Geladen: {products.length}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
           {products.map((o) => (
@@ -22,7 +34,7 @@ export default function SpecialOffers({ products }) {
                 <div className="text-sm text-gray-600 flex-1">{o.info || o.description}</div>
                 <div className="mt-4 flex items-center justify-between">
                   <div className="text-lg font-bold text-indigo-600">{(o.price || o.cost) ? `${o.price || o.cost} ${o.currency || ''}` : ''}</div>
-                  <Link href={{ pathname: '/form', query: { product_id: o.product_id || o.id, name: o.name, price: o.price || o.cost, img: o.img } }} className="bg-indigo-600 text-white px-4 py-2 rounded">Купить</Link>
+                  <Link href={{ pathname: '/form', query: { product_id: o.product_id || o.id, partner_id: o.partner_id || 'metacpa_default', name: o.name, price: o.price || o.cost, img: o.img } }} className="bg-indigo-600 text-white px-4 py-2 rounded">Kaufen</Link>
                 </div>
               </div>
             </div>
@@ -30,6 +42,7 @@ export default function SpecialOffers({ products }) {
         </div>
       </main>
     </div>
+    </>
   )
 }
 

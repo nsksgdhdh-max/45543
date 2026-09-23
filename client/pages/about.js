@@ -1,9 +1,21 @@
+import Head from 'next/head'
 import Header from '../components/Header'
 
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export default function About() {
+  const canonicalUrl = `${CANONICAL_BASE}/about`
+
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <Header />
+    <>
+      <Head>
+        <title>Über LebensKraft</title>
+        <meta name="description" content="Mehr über LebensKraft, unsere Werte, die Auswahl der Produkte und den Service für Gesundheitsprodukte in Deutschland." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
+
+      <div className="min-h-screen bg-white text-slate-900">
+        <Header />
 
       <main>
         {/* Hero */}
@@ -249,5 +261,6 @@ export default function About() {
         </section>
       </main>
     </div>
+    </>
   )
 }

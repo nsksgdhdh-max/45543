@@ -1,15 +1,19 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Header from '../components/Header'
 
+const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export default function FormPage() {
   const router = useRouter()
 
-  const { product_id, name, price, img } = router.query
+  const { product_id, name, price, img, partner_id } = router.query
 
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState(null)
   const [error, setError] = useState(false)
+  const canonicalUrl = `${CANONICAL_BASE}/form`
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -34,7 +38,7 @@ export default function FormPage() {
 
       if (r.ok) {
         setMsg(
-          'Заявка успешно отправлена. Мы свяжемся с вами для подтверждения заказа.'
+          'Ihre Anfrage wurde erfolgreich gesendet. Wir melden uns für die Bestätigung.'
         )
 
         e.target.reset()
@@ -43,35 +47,42 @@ export default function FormPage() {
         setMsg(
           j?.message ||
             j?.error ||
-            'Не удалось отправить заявку. Попробуйте ещё раз.'
+            'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.'
         )
       }
     } catch (err) {
       setError(true)
-      setMsg('Произошла ошибка соединения. Попробуйте ещё раз.')
+      setMsg('Verbindungsfehler. Bitte versuchen Sie es erneut.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <Header />
+    <>
+      <Head>
+        <title>Bestellung — LebensKraft</title>
+        <meta name="description" content="Bestellformular für den Kauf eines Produkts bei LebensKraft." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
 
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        <Header />
+
+        <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
 
         {/* Верх страницы */}
         <div className="mb-8">
           <p className="text-sm font-medium text-gray-500">
-            Оформление
+            Bestellung
           </p>
 
           <h1 className="mt-1 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">
-            Оформить заказ
+            Bestellung abschließen
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
-            Заполните контактные данные, и мы свяжемся с вами для подтверждения заказа.
+            Bitte geben Sie Ihre Kontaktdaten ein. Wir melden uns mit Ihnen, um die Bestellung zu bestätigen.
           </p>
         </div>
 
@@ -99,11 +110,11 @@ export default function FormPage() {
 
               <div>
                 <h2 className="text-lg font-bold text-gray-900">
-                  Контактные данные
+                  Kontaktdaten
                 </h2>
 
                 <p className="text-sm text-gray-500">
-                  Укажите данные для связи
+                  Bitte geben Sie Ihre Kontaktdaten an
                 </p>
               </div>
             </div>
@@ -115,6 +126,12 @@ export default function FormPage() {
                 type="hidden"
                 name="product_id"
                 value={product_id || ''}
+              />
+
+              <input
+                type="hidden"
+                name="partner_id"
+                value={partner_id || 'metacpa_default'}
               />
 
               <input
@@ -147,13 +164,13 @@ export default function FormPage() {
                 value={img || ''}
               />
 
-              {/* ФИО */}
+              {/* Name */}
               <div>
                 <label
                   htmlFor="name"
                   className="mb-2 block text-sm font-semibold text-gray-800"
                 >
-                  ФИО
+                  Name
                 </label>
 
                 <input
@@ -162,18 +179,18 @@ export default function FormPage() {
                   type="text"
                   required
                   autoComplete="name"
-                  placeholder="Введите ваше имя и фамилию"
+                  placeholder="Geben Sie Ihren Namen ein"
                   className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                 />
               </div>
 
-              {/* Телефон */}
+              {/* Telefon */}
               <div>
                 <label
                   htmlFor="phone"
                   className="mb-2 block text-sm font-semibold text-gray-800"
                 >
-                  Телефон
+                  Telefon
                 </label>
 
                 <input
@@ -217,11 +234,11 @@ export default function FormPage() {
                       />
                     </svg>
 
-                    Отправка...
+                    Wird gesendet...
                   </>
                 ) : (
                   <>
-                    Отправить заказ
+                    Bestellung senden
 
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +259,7 @@ export default function FormPage() {
               </button>
 
               <p className="text-center text-xs leading-5 text-gray-400">
-                Нажимая кнопку, вы отправляете заявку на оформление заказа.
+                Durch Klicken auf die Schaltfläche senden Sie eine Anfrage zur Bestellung.
               </p>
             </form>
 
@@ -304,13 +321,13 @@ export default function FormPage() {
 
               <div className="border-b border-gray-100 px-5 py-4">
                 <p className="text-sm font-semibold text-gray-900">
-                  Ваш заказ
+                  Ihre Bestellung
                 </p>
               </div>
 
               {name ? (
                 <>
-                  {/* Фото */}
+                  {/* Bild */}
                   <div className="aspect-square bg-gray-100">
                     {img ? (
                       <img
@@ -320,7 +337,7 @@ export default function FormPage() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center text-gray-400">
-                        Нет изображения
+                        Kein Bild
                       </div>
                     )}
                   </div>
@@ -333,11 +350,11 @@ export default function FormPage() {
 
                     <div className="mt-4 flex items-end justify-between gap-4">
                       <span className="text-sm text-gray-500">
-                        Стоимость
+                        Preis
                       </span>
 
                       <span className="text-2xl font-black text-indigo-600">
-                        {price || 'По запросу'}
+                        {price || 'Auf Anfrage'}
                       </span>
                     </div>
                   </div>
@@ -362,7 +379,7 @@ export default function FormPage() {
                   </div>
 
                   <p className="mt-4 text-sm text-gray-500">
-                    Товар будет добавлен к заявке автоматически.
+                    Das Produkt wird automatisch der Anfrage hinzugefügt.
                   </p>
                 </div>
               )}
@@ -392,11 +409,11 @@ export default function FormPage() {
 
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
-                      Быстрое оформление
+                      Schnelle Bestellung
                     </p>
 
                     <p className="mt-1 text-xs leading-5 text-gray-500">
-                      Заполните всего два обязательных поля.
+                      Füllen Sie nur zwei Pflichtfelder aus.
                     </p>
                   </div>
                 </div>
@@ -421,11 +438,11 @@ export default function FormPage() {
 
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
-                      Свяжемся с вами
+                      Wir melden uns bei Ihnen
                     </p>
 
                     <p className="mt-1 text-xs leading-5 text-gray-500">
-                      После получения заявки уточним детали заказа.
+                      Nach Erhalt der Anfrage klären wir die Bestelldetails mit Ihnen.
                     </p>
                   </div>
                 </div>
@@ -436,5 +453,6 @@ export default function FormPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

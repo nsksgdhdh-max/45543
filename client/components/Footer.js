@@ -17,43 +17,43 @@ export default function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-md text-sm leading-6 text-slate-300">
-              Здоровье, красота и уверенность в каждом выборе — каталог проверенных товаров для Германии с удобной покупкой и быстрыми заявками.
+              Gesundheit, Schönheit und Selbstvertrauen in jeder Auswahl – ein Katalog geprüfter Produkte für Deutschland mit unkomplizierter Bestellung und schnellen Anfragen.
             </p>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Навигация</h3>
+            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Navigation</span>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
-              <li><Link href="/categories" className="transition hover:text-white">Категории</Link></li>
-              <li><Link href="/offers" className="transition hover:text-white">Офферы</Link></li>
-              <li><Link href="/about" className="transition hover:text-white">О нас</Link></li>
-              <li><Link href="/delivery" className="transition hover:text-white">Доставка</Link></li>
+              <li><Link href="/categories" className="transition hover:text-white">Kategorien</Link></li>
+              <li><Link href="/offers" className="transition hover:text-white">Angebote</Link></li>
+              <li><Link href="/about" className="transition hover:text-white">Über uns</Link></li>
+              <li><Link href="/delivery" className="transition hover:text-white">Lieferung</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Помощь</h3>
+            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Hilfe</span>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
-              <li><Link href="/warranty" className="transition hover:text-white">Гарантия</Link></li>
-              <li><Link href="/contact" className="transition hover:text-white">Контакты</Link></li>
-              <li><Link href="/cart" className="transition hover:text-white">Корзина</Link></li>
-              <li><Link href="/form" className="transition hover:text-white">Заявка</Link></li>
+              <li><Link href="/warranty" className="transition hover:text-white">Garantie</Link></li>
+              <li><Link href="/contact" className="transition hover:text-white">Kontakt</Link></li>
+              <li><Link href="/cart" className="transition hover:text-white">Warenkorb</Link></li>
+              <li><Link href="/form" className="transition hover:text-white">Anfrage</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Контакты</h3>
+            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Kontakt</span>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
               <li>support@lebenskraft.de</li>
               <li>+49 30 000 00 00</li>
-              <li>Германия, Берлин</li>
+              <li>Deutschland, Berlin</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 LebensKraft. Все права защищены.</p>
-          <p>Натуральные продукты для вашего здоровья</p>
+          <p>© 2026 LebensKraft. Alle Rechte vorbehalten.</p>
+          <p>Natürliche Produkte für Ihre Gesundheit</p>
         </div>
       </div>
     </footer>
