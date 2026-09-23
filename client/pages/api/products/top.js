@@ -20,6 +20,8 @@ export default function handler(req, res) {
   }
 
   const {
+    action,
+    product,
     id,
     partner_id: partnerId,
     top,
@@ -34,6 +36,59 @@ export default function handler(req, res) {
   } = req.body || {}
 
   const products = readProducts()
+
+  if (action === 'create' || product) {
+    const created = product || {}
+    const safePartnerId = String(created.partner_id || partnerId || 'metacpa_default')
+    const safeId = String(created.id || created.product_id || id || Date.now())
+    const safeProductId = String(created.product_id || safeId)
+
+    const nextProduct = {
+      ...created,
+      id: safeId,
+      product_id: safeProductId,
+      partner_id: safePartnerId,
+      category: created.category || 'male-health',
+      subcategory: created.subcategory || 'General',
+      name: created.name || 'New product',
+      info: created.info || '',
+      img: created.img || '/img/placeholder.svg',
+      tracking_link: created.tracking_link || created.trackingLink || null,
+      top: Number(created.top || top || 0) === 1 ? 1 : 0,
+      main_offer: Number(created.main_offer || mainOffer || 0) === 1 ? 1 : 0,
+      new: Number(created.new || created.main_offer || mainOffer || 0) === 1 ? 1 : 0,
+      target: [
+        {
+          code: 'DE',
+          currency: 'EUR',
+          price: String(created.price || '39'),
+          price_high: String(created.price || '39'),
+          pay: String(created.price || '39'),
+          pay_currency: 'EUR',
+          geo_name: 'Deutschland',
+          callm1: '0',
+        },
+      ],
+    }
+
+    const exists = products.some((item) => {
+      const currentKey = `${String(item.partner_id || 'metacpa_default')}:${String(item.id || item.product_id)}`
+      const targetKey = `${safePartnerId}:${safeId}`
+      return currentKey === targetKey
+    })
+
+    const nextProducts = exists
+      ? products.map((item) => {
+          const currentKey = `${String(item.partner_id || 'metacpa_default')}:${String(item.id || item.product_id)}`
+          return currentKey === `${safePartnerId}:${safeId}` ? { ...item, ...nextProduct } : item
+        })
+      : [...products, nextProduct]
+
+    fs.mkdirSync(path.dirname(productsPath), { recursive: true })
+    fs.writeFileSync(productsPath, `${JSON.stringify(nextProducts, null, 2)}\n`)
+
+    return res.status(200).json({ success: true, products: nextProducts, created: !exists })
+  }
 
   if (!id) {
     return res.status(400).json({ error: 'Product id is required' })

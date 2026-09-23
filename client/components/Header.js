@@ -131,6 +131,13 @@ export default function Header() {
            >
              Kontakte
            </Link>
+
+           <Link
+             href="/impressum"
+             className="rounded-xl px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-indigo-600"
+           >
+             Impressum
+           </Link>
          </div>
 
          {/* RIGHT SIDE */}
@@ -273,6 +280,14 @@ export default function Header() {
                 Kontakte
               </button>
 
+              <button
+                type="button"
+                onClick={() => handleMobileNavClick('/impressum')}
+                className="rounded-xl px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              >
+                Impressum
+              </button>
+ 
             </div>
           </div>
         )}

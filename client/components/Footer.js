@@ -13,7 +13,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-xl font-black tracking-tight text-white">
-                Lebens<span className="text-indigo-400">Kraft</span>
+                ewige<span className="text-indigo-400">-vitalitaet.de</span>
               </span>
             </div>
             <p className="mt-4 max-w-md text-sm leading-6 text-slate-300">
@@ -38,13 +38,15 @@ export default function Footer() {
               <li><Link href="/contact" className="transition hover:text-white">Kontakt</Link></li>
               <li><Link href="/cart" className="transition hover:text-white">Warenkorb</Link></li>
               <li><Link href="/form" className="transition hover:text-white">Anfrage</Link></li>
+              <li><Link href="/impressum" className="transition hover:text-white">Impressum</Link></li>
+              <li><Link href="/datenschutz" className="transition hover:text-white">Datenschutzerklärung</Link></li>
             </ul>
           </div>
 
           <div>
             <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Kontakt</span>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
-              <li>support@lebenskraft.de</li>
+              <li>info@ewige-vitalitaet.de</li>
               <li>+49 30 000 00 00</li>
               <li>Deutschland, Berlin</li>
             </ul>
@@ -52,7 +54,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 LebensKraft. Alle Rechte vorbehalten.</p>
+          <p>© 2026 ewige-vitalitaet.de. Alle Rechte vorbehalten.</p>
           <p>Natürliche Produkte für Ihre Gesundheit</p>
         </div>
       </div>
