@@ -1,0 +1,6 @@
+Contact: mailto:post@ewige-vitalitaet.de
+Contact: tel:+49-30-12345678
+Preferred-Languages: de
+Canonical: https://ewige-vitalitaet.de/.well-known/security.txt
+Policy: https://ewige-vitalitaet.de/datenschutz
+Hiring: https://ewige-vitalitaet.de/contact

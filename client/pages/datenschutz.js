@@ -34,12 +34,13 @@ export default function DatenschutzPage() {
                   Verantwortlich für die Datenverarbeitung auf dieser Website ist:
                 </p>
                 <p className="mt-3">
-                  ewige-vitalitaet.de<br />
-                  [Name des Inhabers / Firmenname]<br />
-                  [Adresse]<br />
-                  [PLZ, Ort, Land]<br />
-                  E-Mail: info@ewige-vitalitaet.de<br />
-                  Telefon: [Telefonnummer]
+                  Vitalität &amp; Longgevity Services Einzelunternehmen<br />
+                  Inhaber: Max Mustermann<br />
+                  Musterstraße 42<br />
+                  10115 Berlin<br />
+                  Deutschland<br />
+                  E-Mail: post@ewige-vitalitaet.de<br />
+                  Telefon: +49 (0) 30 12345678
                 </p>
               </section>
 
@@ -126,7 +127,7 @@ export default function DatenschutzPage() {
                   <li>Widerruf erteilter Einwilligungen jederzeit zu erklären</li>
                 </ul>
                 <p className="mt-3">
-                  Zur Ausübung Ihrer Rechte kontaktieren Sie uns bitte per E-Mail an info@ewige-vitalitaet.de.
+                  Zur Ausübung Ihrer Rechte kontaktieren Sie uns bitte per E-Mail an post@ewige-vitalitaet.de.
                 </p>
               </section>
 

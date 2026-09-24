@@ -77,7 +77,7 @@ export default function Header() {
            </div>
 
            <span className="text-xl font-black tracking-tight text-gray-900">
-             Lebens<span className="text-indigo-600">Kraft</span>
+             Ewige<span className="text-indigo-600"> Vitalität</span>
            </span>
          </Link>
 

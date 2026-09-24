@@ -3,6 +3,7 @@ import path from 'path'
 import Head from 'next/head'
 import Header from '../../../components/Header'
 import Link from 'next/link'
+import { useState } from 'react'
 import { addToCartAndGo } from '../../../lib/cart'
 import { inferFamilyCategory, inferSubcategoryLabel } from '../../../lib/catalog'
 import {
@@ -11,6 +12,7 @@ import {
   resolveProductImage,
   toEnglishSlug,
 } from '../../../lib/product'
+import { buildCollectionPageSchemaFromProducts, buildProductSchema } from '../../../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -192,6 +194,7 @@ export default function SubcategoryPage({
 }) {
   const canonicalUrl = `${CANONICAL_BASE}/categories/${slug}/${sub}`
   const firstVisibleProduct = products[0]
+  const [zoomedImage, setZoomedImage] = useState(null)
   const subcategoryMeta = buildSubcategoryMeta(
     categoryLabels[slug] || slug,
     sub,
@@ -216,13 +219,42 @@ export default function SubcategoryPage({
          <title>{seo.title}</title>
          <meta name="description" content={seo.description} />
          <link rel="canonical" href={canonicalUrl} />
+         <script
+           type="application/ld+json"
+           dangerouslySetInnerHTML={{
+             __html: JSON.stringify(
+               buildProductSchema(product, canonicalUrl),
+             ),
+           }}
+         />
        </Head>
 
        <div className="min-h-screen bg-slate-50 text-slate-900">
          <Header />
 
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+         {zoomedImage && (
+           <button
+             type="button"
+             onClick={() => setZoomedImage(null)}
+             className="fixed inset-0 z-[60] flex cursor-default items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
+             aria-label="Закрыть увеличенное изображение"
+           >
+             <div className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+               <img
+                 src={zoomedImage}
+                 alt={product?.name || 'Изображение товара'}
+                 className="max-h-[90vh] w-full object-contain"
+                 onError={(event) => {
+                   event.currentTarget.onerror = null
+                   event.currentTarget.src = '/img/placeholder.svg'
+                 }}
+               />
+             </div>
+           </button>
+         )}
 
+        <main className="mx-auto max-w-7xl px-3 py-6 sm:px-6 lg:px-8 lg:py-10 max-[350px]:px-2 max-[350px]:py-5">
+ 
           {/* Хлебные крошки */}
           <nav
             aria-label="Хлебные крошки"
@@ -264,83 +296,80 @@ export default function SubcategoryPage({
               ОСНОВНАЯ КАРТОЧКА ТОВАРА
           ================================================= */}
 
-          <article className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+          <article className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white to-slate-50 shadow-[0_22px_60px_-38px_rgba(15,23,42,0.35)] sm:rounded-[2rem]">
 
-            <div className="px-6 pb-0 pt-6 sm:px-8 lg:px-10">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 sm:px-5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Aktuelle URL</p>
-                <a href={canonicalUrl} className="mt-2 block break-all text-sm font-medium text-indigo-700 underline-offset-4 hover:underline">
-                  {canonicalUrl}
-                </a>
-              </div>
-            </div>
+            <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
 
-            <div className="grid lg:grid-cols-2">
+              <div className="bg-gradient-to-br from-slate-100 via-white to-slate-50 p-3 sm:p-8 lg:p-10 max-[350px]:p-2.5">
+                <div className="mb-4 flex items-center justify-between gap-2 sm:mb-5 sm:gap-3">
+                  <span className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-700 sm:px-3 sm:text-[10px]">
+                    {product.subcategory || product.category || 'Produkt'}
+                  </span>
+                  <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-emerald-700 sm:px-3 sm:text-[10px]">
+                    Lieferung 3–7 Tage
+                  </span>
+                </div>
 
-              {/* ФОТО */}
-              <div className="bg-slate-50 p-5 sm:p-8 lg:p-10">
-                <div className="flex min-h-[380px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-8 sm:min-h-[520px]">
-
-                  <img
-                    src={resolveProductImage(product.img)}
-                    alt={product.name || ''}
-                    className="max-h-[500px] w-full object-contain"
-                    onError={(event) => {
-                      event.currentTarget.onerror = null
-                      event.currentTarget.src =
-                        '/img/placeholder.svg'
-                    }}
-                  />
-
+                <div className="flex min-h-[260px] items-center justify-center overflow-hidden rounded-[1.2rem] border border-slate-200 bg-white p-3 shadow-inner sm:min-h-[520px] sm:rounded-[1.7rem] sm:p-6 max-[350px]:min-h-[220px]">
+                  <button
+                    type="button"
+                    onClick={() => setZoomedImage(resolveProductImage(product.img))}
+                    className="block w-full cursor-zoom-in overflow-hidden rounded-[1.2rem]"
+                    aria-label={`Увеличить изображение ${product.name}`}
+                  >
+                    <img
+                      src={resolveProductImage(product.img)}
+                      alt={product.name || ''}
+                      className="w-full max-h-[330px] object-contain transition duration-300 hover:scale-[1.02] sm:max-h-[500px] max-[350px]:max-h-[270px]"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null
+                        event.currentTarget.src = '/img/placeholder.svg'
+                      }}
+                    />
+                  </button>
                 </div>
               </div>
 
-              {/* ПРАВАЯ ЧАСТЬ */}
-              <div className="flex flex-col p-6 sm:p-8 lg:p-10">
+                            <div className="flex flex-col justify-center p-4 sm:p-8 lg:p-10 max-[350px]:p-3">
+                <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 sm:mb-4 sm:text-xs">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  Produktdetails
+                </div>
 
-                {/* Название */}
-                <h1 className="mt-5 text-3xl font-black leading-tight text-slate-950 sm:text-4xl">
+                <h1 className="text-[1.7rem] font-black leading-tight text-slate-950 sm:text-4xl max-[350px]:text-[1.45rem]">
                   {product.name}
                 </h1>
 
-                {/* Дополнительные характеристики */}
-                {characteristics.length > 0 && (
-                  <div className="mt-5 space-y-3">
+                <div className="mt-4 flex flex-wrap items-end gap-2.5 sm:mt-5 sm:gap-3">
+                  <div className="rounded-2xl bg-slate-950 px-3 py-2 text-white shadow-sm sm:px-4 sm:py-2.5">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-300 sm:text-[10px]">Preis</p>
+                    <p className="mt-1 text-xl font-black tracking-tight sm:text-3xl max-[350px]:text-lg">{price}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 sm:px-4 sm:py-2.5 sm:text-sm">
+                    <span className="font-semibold text-slate-800">Qualität</span>
+                    <span className="ml-1 sm:ml-2">für den Alltag</span>
+                  </div>
+                </div>
 
+                {characteristics.length > 0 && (
+                  <div className="mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3">
                     {characteristics.map((item) => (
                       <div
                         key={item.label}
-                        className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3 text-sm"
+                        className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5 sm:p-3"
                       >
-                        <span className="text-slate-500">
+                        <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500 sm:text-[10px]">
                           {item.label}
-                        </span>
-
-                        <span className="text-right font-semibold text-slate-800">
+                        </p>
+                        <p className="mt-2 text-xs font-semibold text-slate-800 sm:text-sm">
                           {item.value}
-                        </span>
+                        </p>
                       </div>
                     ))}
-
                   </div>
                 )}
 
-                {/* Preis */}
-                <div className="mt-7">
-
-                  <p className="text-sm font-medium text-slate-500">
-                    Preis
-                  </p>
-
-                  <p className="mt-1 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-                    {price}
-                  </p>
-
-                </div>
-
-                {/* Кнопки */}
-                <div className="mt-7 grid grid-cols-2 gap-3">
-
+                <div className="mt-6 grid grid-cols-1 gap-2.5 sm:mt-7 sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
                     onClick={() =>
@@ -350,7 +379,7 @@ export default function SubcategoryPage({
                         displayPrice: price,
                       })
                     }
-                    className="rounded-xl bg-emerald-600 px-5 py-3.5 text-center text-sm font-bold text-white shadow-sm transition hover:bg-emerald-500 active:scale-[0.98]"
+                    className="rounded-2xl bg-emerald-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-emerald-500 active:scale-[0.98] sm:px-5 sm:py-3.5"
                   >
                     In den Warenkorb
                   </button>
@@ -359,23 +388,24 @@ export default function SubcategoryPage({
                     href={{
                       pathname: '/form',
                       query: {
-                        product_id:
-                          product.product_id || product.id,
-                        partner_id:
-                          product.partner_id ||
-                          'metacpa_default',
+                        product_id: product.product_id || product.id,
+                        partner_id: product.partner_id || 'metacpa_default',
                         name: product.name,
                         price,
                         img: product.img,
                       },
                     }}
-                    className="rounded-xl bg-slate-950 px-5 py-3.5 text-center text-sm font-bold text-white transition hover:bg-slate-800"
+                    className="rounded-2xl bg-black px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-800 hover:text-white sm:px-5 sm:py-3.5"
+                    style={{ color: '#fff' }}
                   >
                     Kaufen
                   </Link>
-
                 </div>
 
+                <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-3 text-xs leading-6 text-slate-600 sm:mt-6 sm:p-4 sm:text-sm">
+                  <p className="font-semibold text-slate-800">Warum Kunden dieses Produkt wählen</p>
+                  <p className="mt-2">Praxisnah, verständlich und unkompliziert im Alltag. Klar strukturierte Produktdetails helfen bei der Entscheidung.</p>
+                </div>
               </div>
             </div>
           </article>
@@ -390,7 +420,7 @@ export default function SubcategoryPage({
                Produktbeschreibung
              </p>
              <h2 className="mt-2 text-2xl font-black text-slate-950">
-               {seo.title.replace(/\s*\|.*$/, '')}
+               {product.name || seo.title.replace(/\s*\|.*$/, '')}
              </h2>
 
              <div className="mt-5 rounded-2xl bg-gradient-to-r from-indigo-50 to-slate-50 p-5">
@@ -470,6 +500,7 @@ export default function SubcategoryPage({
                             <Link
                               href={buildProductUrl(item)}
                               className="rounded-lg bg-slate-950 px-3 py-2 text-xs font-bold text-white transition hover:bg-slate-800"
+                              style={{ color: '#fff' }}
                             >
                               Mehr erfahren
                             </Link>
@@ -507,6 +538,30 @@ export default function SubcategoryPage({
         <title>{subcategoryMeta.title}</title>
         <meta name="description" content={subcategoryMeta.description} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildCollectionPageSchemaFromProducts({
+                name: sub,
+                description: subcategoryMeta.description,
+                url: canonicalUrl,
+                products: products.slice(0, 12).map((item) => ({
+                  name: item.name,
+                  url: buildProductUrl(item, slug),
+                  image: resolveProductImage(item.img),
+                  price: priceForProduct(item),
+                })),
+                breadcrumbs: [
+                  { name: 'Startseite', url: `${CANONICAL_BASE}/` },
+                  { name: 'Katalog', url: `${CANONICAL_BASE}/categories` },
+                  { name: categoryLabels[slug] || slug, url: `${CANONICAL_BASE}/categories/${slug}` },
+                  { name: sub, url: canonicalUrl },
+                ],
+              }),
+            ),
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-slate-50 text-slate-900">

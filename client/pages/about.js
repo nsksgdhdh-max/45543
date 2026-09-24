@@ -9,8 +9,8 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>Über LebensKraft</title>
-        <meta name="description" content="Mehr über LebensKraft, unsere Werte, die Auswahl der Produkte und den Service für Gesundheitsprodukte in Deutschland." />
+        <title>Über Ewige Vitalität</title>
+        <meta name="description" content="Mehr über Ewige Vitalität, unsere Werte, die Auswahl der Produkte und den Service für Gesundheitsprodukte in Deutschland." />
         <link rel="canonical" href={canonicalUrl} />
       </Head>
 
@@ -23,7 +23,7 @@ export default function About() {
           <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700 sm:text-sm sm:tracking-[0.18em]">
-                Über LebensKraft
+                Über Ewige Vitalität
               </p>
 
               <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-4 sm:text-4xl lg:text-5xl">
@@ -35,7 +35,7 @@ export default function About() {
               </p>
 
               <p className="mt-3 text-base leading-7 text-slate-600 sm:mt-4 sm:text-lg sm:leading-8">
-                bei LebensKraft möchten wir Ihnen eine einfache und
+                bei Ewige Vitalität möchten wir Ihnen eine einfache und
                 zuverlässige Möglichkeit bieten, Gesundheitsprodukte
                 übersichtlich zu entdecken und sich über deren Eigenschaften,
                 Inhaltsstoffe und Anwendung zu informieren.
@@ -56,7 +56,7 @@ export default function About() {
                 </h2>
 
                 <p>
-                  LebensKraft ist eine Plattform für Gesundheitsprodukte,
+                  Ewige Vitalität ist eine Plattform für Gesundheitsprodukte,
                   Nahrungsergänzungsmittel und ausgewählte Produkte aus dem
                   Bereich Gesundheit und Wohlbefinden.
                 </p>
@@ -183,7 +183,7 @@ export default function About() {
               </p>
 
               <h2 className="mt-2 text-2xl font-bold leading-tight tracking-tight text-slate-950 sm:mt-3 sm:text-3xl">
-                Was uns bei LebensKraft wichtig ist
+                Was uns bei Ewige Vitalität wichtig ist
               </h2>
             </div>
 
@@ -246,14 +246,14 @@ export default function About() {
               </h2>
 
               <p className="mt-4 text-sm leading-6 text-emerald-50 sm:mt-5 sm:text-base sm:leading-7 lg:text-lg">
-                Vielen Dank, dass Sie LebensKraft Ihr Vertrauen schenken.
+                Vielen Dank, dass Sie Ewige Vitalität Ihr Vertrauen schenken.
                 Unser Ziel ist es, Ihnen eine übersichtliche Plattform mit
                 verständlichen Informationen und einem angenehmen
                 Einkaufserlebnis zu bieten.
               </p>
 
               <p className="mt-6 text-base font-semibold sm:mt-8 sm:text-lg">
-                Ihr LebensKraft-Team
+                Ihr Team von Ewige Vitalität
               </p>
 
             </div>

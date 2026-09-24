@@ -29,12 +29,12 @@ export default function ImpressumPage() {
 
             <div className="mt-8 grid gap-8 lg:grid-cols-2">
               <section>
-                <h2 className="text-xl font-bold text-slate-900">Verantwortlich für den Inhalt</h2>
+                <h2 className="text-xl font-bold text-slate-900">Angaben gemäß § 5 TMG</h2>
                 <div className="mt-4 space-y-2 text-base leading-7 text-slate-700">
-                  <p><strong>ewige-vitalitaet.de</strong></p>
-                  <p>Inhaber: Geschäftsführung / Betreiber</p>
-                  <p>[Adresse]</p>
-                  <p>[PLZ, Ort]</p>
+                  <p><strong>Vitalität &amp; Longgevity Services Einzelunternehmen</strong></p>
+                  <p>Inhaber: Max Mustermann</p>
+                  <p>Musterstraße 42</p>
+                  <p>10115 Berlin</p>
                   <p>Deutschland</p>
                 </div>
               </section>
@@ -42,8 +42,8 @@ export default function ImpressumPage() {
               <section>
                 <h2 className="text-xl font-bold text-slate-900">Kontakt</h2>
                 <div className="mt-4 space-y-2 text-base leading-7 text-slate-700">
-                  <p>E-Mail: info@ewige-vitalitaet.de</p>
-                  <p>Telefon: +49 30 000 00 00</p>
+                  <p>Telefon: +49 (0) 30 12345678</p>
+                  <p>E-Mail: post@ewige-vitalitaet.de</p>
                   <p>Kontaktformular: <a href="/contact" className="font-medium text-indigo-600 hover:text-indigo-500">zum Kontakt</a></p>
                   <p>Öffnungszeiten: Mo.–Fr. von 09:00 bis 18:00 Uhr</p>
                 </div>

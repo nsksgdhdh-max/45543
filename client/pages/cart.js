@@ -82,6 +82,8 @@ export default function CartPage() {
         <Head>
           <title>Warenkorb — LebensKraft</title>
           <meta name="description" content="Warenkorbansicht bei LebensKraft." />
+          <meta name="robots" content="noindex,nofollow,noarchive" />
+          <meta name="googlebot" content="noindex,nofollow,noarchive" />
           <link rel="canonical" href={canonicalUrl} />
         </Head>
 
@@ -133,6 +135,8 @@ export default function CartPage() {
       <Head>
         <title>Warenkorb — LebensKraft</title>
         <meta name="description" content="Warenkorbansicht bei LebensKraft." />
+        <meta name="robots" content="noindex,nofollow,noarchive" />
+        <meta name="googlebot" content="noindex,nofollow,noarchive" />
         <link rel="canonical" href={canonicalUrl} />
       </Head>
 

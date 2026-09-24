@@ -46,7 +46,7 @@ export default function Footer() {
           <div>
             <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Kontakt</span>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
-              <li>info@ewige-vitalitaet.de</li>
+              <li>post@ewige-vitalitaet.de</li>
               <li>+49 30 000 00 00</li>
               <li>Deutschland, Berlin</li>
             </ul>

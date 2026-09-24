@@ -4,6 +4,7 @@ import Link from 'next/link'
 import products from '../data/specific_products.json'
 import { buildCatalogGroups } from '../lib/catalog'
 import { resolveProductImage } from '../lib/product'
+import { buildCollectionPageSchemaFromProducts } from '../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 const categories = buildCatalogGroups(products)
@@ -79,6 +80,30 @@ export default function Categories() {
         <title>Produktkatalog — LebensKraft</title>
         <meta name="description" content="Produktkatalog von LebensKraft. Auswahl an Kategorien und Produkten für Gesundheit, Schönheit und Alltagswohlbefinden." />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildCollectionPageSchemaFromProducts({
+                name: 'Produktkategorien',
+                description: 'Produktkatalog von Ewige Vitalität mit Kategorien und Gesundheitsprodukten für Alltag, Vitalität und Wohlbefinden.',
+                url: canonicalUrl,
+                products: categories.flatMap((category) =>
+                  (category.items || []).slice(0, 3).map((item) => ({
+                    name: item.name,
+                    url: `${CANONICAL_BASE}/categories/${category.slug}`,
+                    image: resolveProductImage(item.img),
+                    price: item.target?.[0]?.price || '0',
+                  })),
+                ),
+                breadcrumbs: [
+                  { name: 'Startseite', url: `${CANONICAL_BASE}/` },
+                  { name: 'Katalog', url: canonicalUrl },
+                ],
+              }),
+            ),
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-slate-50 text-slate-900">

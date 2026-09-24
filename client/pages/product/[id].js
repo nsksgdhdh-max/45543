@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { addToCartAndGo } from '../../lib/cart'
 import { inferFamilyCategory } from '../../lib/catalog'
 import { buildProductSeo, getProductIdFromParam, resolveProductImage, toEnglishSlug } from '../../lib/product'
+import { buildProductSchema } from '../../lib/schema'
 
 const CATEGORY_LABELS = {
   'male-health': 'Männliche Gesundheit',
@@ -36,6 +37,7 @@ export default function ProductDetailPage({ product }) {
   const [orderSent, setOrderSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [zoomedImage, setZoomedImage] = useState(null)
 
   if (!product) {
     return (
@@ -111,56 +113,89 @@ export default function ProductDetailPage({ product }) {
         <meta property="og:title" content={seo.title} />
         <meta property="og:description" content={seo.description} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildProductSchema(product, canonicalUrl)),
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-slate-50 text-slate-900">
         <Header />
-        <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6 flex flex-wrap gap-3">
-          <Link href="/categories" className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">Zurück zum Katalog</Link>
-        </div>
-
-        <article className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-          <div className="grid gap-8 p-6 md:grid-cols-2 md:p-8">
-            <div className="overflow-hidden rounded-[1.5rem] bg-slate-100">
+        {zoomedImage && (
+          <button
+            type="button"
+            onClick={() => setZoomedImage(null)}
+            className="fixed inset-0 z-[60] flex cursor-default items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
+            aria-label="Закрыть увеличенное изображение"
+          >
+            <div className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
               <img
-                src={resolveProductImage(product.img)}
+                src={zoomedImage}
                 alt={product.name}
-                className="h-full max-h-[480px] w-full object-cover"
+                className="max-h-[90vh] w-full object-contain"
                 onError={(event) => {
                   event.currentTarget.onerror = null
                   event.currentTarget.src = '/img/placeholder.svg'
                 }}
               />
             </div>
+          </button>
+        )}
+        <main className="mx-auto max-w-6xl px-3 py-6 sm:px-6 lg:px-8 lg:py-10 max-[350px]:px-2 max-[350px]:py-5">
+        <div className="mb-4 flex flex-wrap gap-2 sm:mb-6 sm:gap-3">
+          <Link href="/categories" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 sm:px-4 sm:text-sm">Zurück zum Katalog</Link>
+        </div>
+
+        <article className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:rounded-[2rem]">
+          <div className="grid gap-4 p-3 md:grid-cols-2 md:gap-8 md:p-8 max-[350px]:gap-3 max-[350px]:p-2.5">
+            <div className="overflow-hidden rounded-[1.2rem] bg-slate-100 sm:rounded-[1.5rem]">
+              <button
+                type="button"
+                onClick={() => setZoomedImage(resolveProductImage(product.img))}
+                className="block h-full w-full cursor-zoom-in overflow-hidden"
+                aria-label={`Увеличить изображение ${product.name}`}
+              >
+                <img
+                  src={resolveProductImage(product.img)}
+                  alt={product.name}
+                  className="h-full max-h-[360px] w-full object-contain transition duration-300 hover:scale-[1.02] sm:max-h-[480px] max-[350px]:max-h-[280px]"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null
+                    event.currentTarget.src = '/img/placeholder.svg'
+                  }}
+                />
+              </button>
+            </div>
 
             <div className="flex flex-col justify-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{product.category || 'Produkt'}</p>
-              <h1 className="mt-3 text-3xl font-black text-slate-900 sm:text-4xl">{product.name}</h1>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-xs">{product.category || 'Produkt'}</p>
+              <h1 className="mt-2 text-[1.7rem] font-black text-slate-900 sm:mt-3 sm:text-4xl max-[350px]:text-[1.45rem]">{product.name}</h1>
 
-              <div className="mt-4 flex items-center gap-3">
-                <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-sm font-bold text-indigo-700">{price}</span>
-                {product.subcategory && <span className="text-sm text-slate-500">{product.subcategory}</span>}
+              <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 sm:text-sm">{price}</span>
+                {product.subcategory && <span className="text-xs text-slate-500 sm:text-sm">{product.subcategory}</span>}
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-col gap-2.5 sm:mt-6 sm:flex-row sm:flex-wrap sm:gap-3">
                 <button
                   type="button"
                   onClick={(event) => {
                     addToCartAndGo({ ...product, price, displayPrice: price }, event)
                   }}
-                  className="rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500"
+                 className="rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500 sm:px-6"
                 >
                   In den Warenkorb
                 </button>
-                <Link href={{ pathname: '/form', query: { product_id: product.product_id || product.id, partner_id: product.partner_id || 'metacpa_default', name: product.name, price, img: product.img } }} className="rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                <Link href={{ pathname: '/form', query: { product_id: product.product_id || product.id, partner_id: product.partner_id || 'metacpa_default', name: product.name, price, img: product.img } }} className="rounded-full bg-black px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-slate-800 hover:text-white sm:px-6" style={{ color: '#fff' }}>
                   Kaufen
                 </Link>
               </div>
 
-              <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:mt-8 sm:p-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Beschreibung</p>
-                <p className="mt-3 text-base leading-7 text-slate-700">
+                <p className="mt-3 text-sm leading-7 text-slate-700 sm:text-base">
                   {product.info || 'Natürliches Produkt zur täglichen Unterstützung von Gesundheit und Wohlbefinden im Alltag.'}
                 </p>
               </div>

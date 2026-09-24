@@ -74,8 +74,8 @@ export default function Home({ news = [] }) {
   return (
     <>
       <Head>
-        <title>LebensKraft — Gesundheit, Schönheit und Wohlbefinden</title>
-        <meta name="description" content="LebensKraft ist ein Gesundheits-Shop mit Produkten für Gesundheit, Wohlbefinden und Alltag in Deutschland." />
+        <title>Ewige Vitalität — Gesundheit, Schönheit und Wohlbefinden</title>
+        <meta name="description" content="Ewige Vitalität ist ein Gesundheits-Shop mit Produkten für Gesundheit, Wohlbefinden und Alltag in Deutschland." />
         <link rel="canonical" href={canonicalUrl} />
       </Head>
 
@@ -153,6 +153,35 @@ export default function Home({ news = [] }) {
                   Mehr erfahren
                 </button>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-16 rounded-[2rem] border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-slate-50 p-4 shadow-sm sm:mt-20 sm:p-6 lg:p-8">
+          <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-2xl font-black text-slate-900 sm:text-3xl">Transparenz, Fachwissen und Vertrauen</h2>
+            </div>
+            <div className="rounded-2xl border border-emerald-200 bg-white/80 px-3 py-2 text-sm leading-6 text-slate-600 shadow-sm">
+              Unsere Inhalte sollen verständlich, sachlich und nachvollziehbar sein – damit Sie mit mehr Klarheit entscheiden können.
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="text-2xl">✅</div>
+              <h3 className="mt-3 text-lg font-bold text-slate-900">Verlässliche Information</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Klare Produktbeschreibungen ohne übertriebene Versprechen.</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="text-2xl">🧭</div>
+              <h3 className="mt-3 text-lg font-bold text-slate-900">Nachvollziehbare Auswahl</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Kategorien und Hinweise helfen dabei, die richtigen Produkte leichter zu finden.</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="text-2xl">⚖️</div>
+              <h3 className="mt-3 text-lg font-bold text-slate-900">Gesundheit mit Verantwortung</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Wir weisen auf die Grenzen allgemeiner Informationen hin und empfehlen fachkundige Beratung.</p>
             </div>
           </div>
         </section>

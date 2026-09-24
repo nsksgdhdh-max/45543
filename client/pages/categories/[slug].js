@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { addToCart, addToCartAndGo } from '../../lib/cart'
 import { buildSubcategoryRouteSlug, filterProductsByQuery, inferFamilyCategory, inferSubcategoryLabel, matchesSubcategoryRoute, normalizeProductRecord } from '../../lib/catalog'
 import { buildProductUrl, resolveProductImage } from '../../lib/product'
+import { buildCollectionPageSchemaFromProducts } from '../../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -188,6 +189,29 @@ export default function CategoryPage({ initialProducts, slug }) {
         <title>{categoryMeta.title}</title>
         <meta name="description" content={categoryMeta.description} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildCollectionPageSchemaFromProducts({
+                name: categoryLabels[slug] || slug,
+                description: categoryMeta.description,
+                url: canonicalUrl,
+                products: filteredOffers.slice(0, 12).map((product) => ({
+                  name: product.name,
+                  url: buildProductUrl(product, slug),
+                  image: resolveProductImage(product.img),
+                  price: priceForProduct(product),
+                })),
+                breadcrumbs: [
+                  { name: 'Startseite', url: `${CANONICAL_BASE}/` },
+                  { name: 'Katalog', url: `${CANONICAL_BASE}/categories` },
+                  { name: categoryLabels[slug] || slug, url: canonicalUrl },
+                ],
+              }),
+            ),
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-slate-50 text-slate-900">
