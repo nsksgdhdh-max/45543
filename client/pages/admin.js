@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { readFileSync } from 'fs'
 import path from 'path'
@@ -384,6 +384,165 @@ export default function AdminPage({ list, news, products, partners }) {
     { id: 'partners', label: 'Партнёры', count: partnerList.length },
     { id: 'top-products', label: 'Топ товары', count: productList.filter((item) => Number(item.top) === 1).length },
   ]
+
+  const [authState, setAuthState] = useState('checking')
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' })
+  const [otpForm, setOtpForm] = useState({ code: '' })
+  const [authStatus, setAuthStatus] = useState('')
+  const [authLoading, setAuthLoading] = useState(false)
+
+  useEffect(() => {
+    const hashValue = typeof window !== 'undefined' ? window.location.hash.replace(/^#/, '') : ''
+    const session = typeof window !== 'undefined' ? localStorage.getItem('ewige-admin-session') : null
+    const expectedHash = process.env.NEXT_PUBLIC_ADMIN_HASH || 'ewige-vitalitaet-admin-a4f9'
+
+    if (hashValue === expectedHash && session === 'active') {
+      setAuthState('authorized')
+      return
+    }
+
+    setAuthState('login')
+  }, [])
+
+  const navigateToHiddenAdmin = () => {
+    if (typeof window === 'undefined') return
+    const hash = process.env.NEXT_PUBLIC_ADMIN_HASH || 'ewige-vitalitaet-admin-a4f9'
+    window.history.replaceState(null, '', `${window.location.pathname}#${hash}`)
+  }
+
+  const handleLoginSubmit = async (event) => {
+    event.preventDefault()
+    setAuthLoading(true)
+    setAuthStatus('')
+
+    try {
+      const response = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'login',
+          username: loginForm.username,
+          password: loginForm.password,
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Неверный логин или пароль')
+
+      navigateToHiddenAdmin()
+      setAuthState('otp')
+      setAuthStatus(`Код отправлен на ${json.email || 'post@ewige-vitalitaet.de'}. Код действует 60 секунд.`)
+    } catch (error) {
+      setAuthStatus(error.message || 'Ошибка входа')
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handleOtpSubmit = async (event) => {
+    event.preventDefault()
+    setAuthLoading(true)
+    setAuthStatus('')
+
+    try {
+      const response = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify',
+          username: loginForm.username,
+          code: otpForm.code,
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Неверный код подтверждения')
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ewige-admin-session', 'active')
+      }
+      navigateToHiddenAdmin()
+      setAuthState('authorized')
+      setAuthStatus('Доступ подтверждён')
+    } catch (error) {
+      setAuthStatus(error.message || 'Ошибка проверки кода')
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  if (authState !== 'authorized') {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-10 text-slate-100">
+        <div className="w-full max-w-md rounded-[28px] border border-slate-800 bg-slate-900 p-6 shadow-2xl shadow-slate-950/60">
+          <div className="mb-6">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Secure admin</p>
+            <h1 className="mt-2 text-3xl font-black tracking-tight text-white">
+              {authState === 'otp' ? 'Подтверждение по email' : 'Вход в админку'}
+            </h1>
+          </div>
+
+          {authState === 'otp' ? (
+            <form onSubmit={handleOtpSubmit} className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Код подтверждения</label>
+                <input
+                  value={otpForm.code}
+                  onChange={(event) => setOtpForm({ code: event.target.value })}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
+                  placeholder="Введите код из письма"
+                  autoComplete="one-time-code"
+                />
+              </div>
+
+              {authStatus && <p className="text-sm text-slate-300">{authStatus}</p>}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {authLoading ? 'Проверяем...' : 'Подтвердить вход'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Логин</label>
+                <input
+                  value={loginForm.username}
+                  onChange={(event) => setLoginForm({ ...loginForm, username: event.target.value })}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
+                  placeholder="ewige-admin"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Пароль</label>
+                <input
+                  type="password"
+                  value={loginForm.password}
+                  onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
+                  placeholder="••••••••••••"
+                />
+              </div>
+
+              {authStatus && <p className="text-sm text-amber-300">{authStatus}</p>}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {authLoading ? 'Проверяем...' : 'Войти'}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
