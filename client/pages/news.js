@@ -41,9 +41,6 @@ export default function News({ items }) {
                 )}
 
                 <div className="p-5">
-                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    {new Date(item.createdAt).toLocaleDateString('ru-RU')}
-                  </div>
                   <h2 className="mt-3 text-2xl font-bold text-slate-900">{item.title}</h2>
                   {item.excerpt && <p className="mt-3 text-sm leading-6 text-slate-600">{item.excerpt}</p>}
                   <div className="mt-4 text-sm font-semibold text-indigo-600">Weiterlesen →</div>
@@ -58,7 +55,7 @@ export default function News({ items }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   return {
     props: {
       items: readNews(),

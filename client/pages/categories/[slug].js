@@ -6,9 +6,9 @@ import Link from 'next/link'
 import Header from '../../components/Header'
 import { useRouter } from 'next/router'
 import { addToCart, addToCartAndGo } from '../../lib/cart'
-import { buildSubcategoryRouteSlug, filterProductsByQuery, inferFamilyCategory, inferSubcategoryLabel, matchesSubcategoryRoute, normalizeProductRecord } from '../../lib/catalog'
+import { buildSubcategoryRouteSlug, filterProductsByQuery, getCanonicalSubcategories, inferSubcategoryLabel, matchesSubcategoryRoute } from '../../lib/catalog'
 import { buildProductUrl, resolveProductImage } from '../../lib/product'
-import { buildCollectionPageSchemaFromProducts } from '../../lib/schema'
+import { buildCollectionPageSchemaFromProducts, buildFaqSchema, buildWebPageSchema } from '../../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -127,13 +127,18 @@ export default function CategoryPage({ initialProducts, slug }) {
   const [activeFilter, setActiveFilter] = useState('all')
   const [search, setSearch] = useState('')
 
-  const availableSubcats = Array.from(
-    new Set(
-      offers.map((product) => inferSubcategoryLabel(product)).filter(Boolean)
-    )
+  const allowedSubcats = getCanonicalSubcategories(slug)
+  const availableSubcats = allowedSubcats.filter((subcat) =>
+    offers.some((product) => inferSubcategoryLabel(product) === subcat)
   )
+  const showSubcategoryFilters = slug !== 'male-health' && availableSubcats.length > 0
 
   useEffect(() => {
+    if (slug === 'male-health') {
+      setActiveFilter('all')
+      return
+    }
+
     const selectedSub =
       typeof router.query.sub === 'string'
         ? decodeURIComponent(router.query.sub)
@@ -143,6 +148,7 @@ export default function CategoryPage({ initialProducts, slug }) {
   }, [router.query.sub])
 
   const filteredBySubcategory = offers.filter((product) => {
+    if (slug === 'male-health') return true
     if (activeFilter === 'all' || !activeFilter) return true
 
     return matchesSubcategoryRoute(product, activeFilter)
@@ -182,13 +188,43 @@ export default function CategoryPage({ initialProducts, slug }) {
     firstProduct?.name || '',
     firstProduct ? priceForProduct(firstProduct) : ''
   )
+  const categoryTitle = categoryMeta.title
+  const categoryDescription = categoryMeta.description
+  const categoryPageSchema = buildWebPageSchema({
+    name: categoryLabels[slug] || slug,
+    description: categoryDescription,
+    url: canonicalUrl,
+  })
+  const categoryFaqSchema = buildFaqSchema([
+    {
+      question: `Welche Produkte finde ich in ${categoryLabels[slug] || slug}?`,
+      answer: `In dieser Kategorie finden Sie thematisch passende Produkte mit klarer Zuordnung nach Unterkategorien.`,
+    },
+    {
+      question: 'Wie kann ich Produkte in dieser Kategorie filtern?',
+      answer: 'Sie können nach Unterkategorie auswählen und zusätzlich über die Suche gezielt nach Namen oder Themen filtern.',
+    },
+  ])
 
   return (
     <>
       <Head>
-        <title>{categoryMeta.title}</title>
-        <meta name="description" content={categoryMeta.description} />
+        <title>{categoryTitle}</title>
+        <meta name="description" content={categoryDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={categoryTitle} />
+        <meta property="og:description" content={categoryDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={categoryTitle} />
+        <meta name="twitter:description" content={categoryDescription} />
+        <meta name="twitter:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(categoryPageSchema) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -211,6 +247,10 @@ export default function CategoryPage({ initialProducts, slug }) {
               }),
             ),
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(categoryFaqSchema) }}
         />
       </Head>
 
@@ -311,7 +351,7 @@ export default function CategoryPage({ initialProducts, slug }) {
             </div>
 
             {/* SUBCATEGORIES */}
-            {availableSubcats.length > 0 && (
+            {showSubcategoryFilters && (
               <div className="mt-7 border-t border-slate-100 pt-6">
 
                 <div className="mb-3 flex items-center justify-between">
@@ -560,8 +600,12 @@ export async function getServerSideProps(context) {
   }
 
   const initialProducts = products
-    .map((product) => normalizeProductRecord(product))
-    .filter((product) => inferFamilyCategory(product).slug === slug)
+    .filter((product) => String(product?.category || '') === slug)
+    .map((product) => ({
+      ...product,
+      category: String(product?.category || ''),
+      subcategory: inferSubcategoryLabel(product),
+    }))
 
   return {
     props: {

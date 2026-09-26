@@ -56,9 +56,6 @@ export default function NewsDetail({ item }) {
           )}
 
           <div className="p-6 sm:p-8 lg:p-10">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-              {new Date(item.createdAt).toLocaleDateString('de-DE')}
-            </div>
             <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">{item.title}</h1>
             {item.excerpt && <p className="mt-4 text-lg text-slate-600">{item.excerpt}</p>}
             <div className="mt-8 whitespace-pre-line text-base leading-8 text-slate-700">{item.body}</div>
@@ -70,23 +67,7 @@ export default function NewsDetail({ item }) {
   )
 }
 
-export async function getStaticPaths() {
-  const items = readNews()
-
-  const paths = items.flatMap((item) => {
-    const values = [item.slug, item.id, item.createdAt]
-    return values
-      .filter((value) => String(value || '').trim())
-      .map((value) => ({ params: { id: String(value) } }))
-  })
-
-  return {
-    paths,
-    fallback: 'blocking',
-  }
-}
-
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const items = readNews()
   const matchValue = String(params?.id || '').trim().toLowerCase()
   const item = items.find((entry) => {

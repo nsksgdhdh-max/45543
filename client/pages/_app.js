@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import Footer from '../components/Footer'
-import { buildWebsiteSchema } from '../lib/schema'
+import { buildOrganizationSchema, buildWebsiteSchema } from '../lib/schema'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps }) {
   const websiteSchema = buildWebsiteSchema()
+  const organizationSchema = buildOrganizationSchema()
 
   return (
     <>
@@ -20,6 +21,10 @@ export default function App({ Component, pageProps }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </Head>
 

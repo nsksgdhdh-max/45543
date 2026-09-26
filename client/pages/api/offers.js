@@ -165,26 +165,16 @@ function resolveApiFamilySlug(offer, fallbackName = '') {
 
 function resolveApiSubcategory(offer, familySlug) {
   const text = `${sanitizeOfferTitle(offer?.title) || ''} ${sanitizeOfferTitle(offer?.name) || ''} ${offer?.description || ''} ${offer?.info || ''}`
-  const normalized = String(text || '').toLowerCase()
+  const categoryTitle = Array.isArray(offer?.categories)
+    ? offer.categories.map((entry) => entry?.title || entry?.name || '').filter(Boolean).join(' ')
+    : ''
 
-  if (/(varix|skincare|cosmetic|cosmetics|beauty|cream|gel|serum|lotion|anti[- ]?age|rejuvenation|skin care|body care|varicose|venous|vein|морщин|крем|гель|сыворот|лосьон|уход|кожа|очищение.*кож|кож.*уход)/i.test(normalized)) {
-    return 'Anti-Aging-Pflege'
-  }
-
-  if (familySlug === 'male-health' && /prostat|potency|libido|testosterone/i.test(normalized)) return 'Potenz und Libido'
-  if (familySlug === 'vision-hearing' && /hearing|ear|audi|ear/i.test(normalized)) return 'Sehen und Hören'
-  if (familySlug === 'joints' && /joint|arthritis|cartilage|pain/i.test(normalized)) return 'Gesundheit der Gelenke'
-  if (familySlug === 'digestive' && /gut|stomach|digest|colon|parasite/i.test(normalized)) return 'Verdauung und Reinigung'
-  if (familySlug === 'weight-loss' && /weight|slim|fat|burn/i.test(normalized)) return 'Gewichtsverlust und Gewichtsmanagement'
-  if (familySlug === 'heart' && /heart|pressure|cardio|hypertension/i.test(normalized)) return 'Herz und Blutdruck'
-  if (familySlug === 'metabolism' && /diabetes|glucose|sugar/i.test(normalized)) return 'Diabetes und Stoffwechsel'
-  if (familySlug === 'nerves' && /stress|sleep|anxiety|mental/i.test(normalized)) return 'Nervensystem'
-  if (familySlug === 'urinary' && /urinary|kidney|cystitis|bladder/i.test(normalized)) return 'Urogenitalsystem'
-
-  const categoryTitle = Array.isArray(offer?.categories) ? offer.categories.map((entry) => entry?.title || entry?.name || '').filter(Boolean).join(' ') : ''
-  if (categoryTitle) return categoryTitle
-
-  return inferSubcategoryLabel({ name: offer?.title || offer?.name || '', info: text, category: familySlug, subcategory: '' })
+  return inferSubcategoryLabel({
+    name: offer?.title || offer?.name || '',
+    info: text || categoryTitle,
+    category: familySlug,
+    subcategory: categoryTitle,
+  })
 }
 
 function extractPrice(offer, geoCode) {

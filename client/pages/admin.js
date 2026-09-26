@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import Header from '../components/Header'
-import { readFileSync } from 'fs'
-import path from 'path'
 import { readNews } from '../lib/news'
 import { readPartners } from '../lib/partners'
 
 function readSubmissions() {
+  const { readFileSync } = require('node:fs')
+  const path = require('node:path')
   const file = path.join(process.cwd(), 'data', 'submissions.json')
   try {
     const s = readFileSync(file, 'utf8')
@@ -14,11 +14,41 @@ function readSubmissions() {
 }
 
 function readProducts() {
+  const { readFileSync } = require('node:fs')
+  const path = require('node:path')
   const file = path.join(process.cwd(), 'data', 'specific_products.json')
   try {
     const s = readFileSync(file, 'utf8')
     return JSON.parse(s || '[]')
   } catch (e) { return [] }
+}
+
+function readCategories() {
+  const { readFileSync } = require('node:fs')
+  const path = require('node:path')
+  const file = path.join(process.cwd(), 'data', 'categories.json')
+  const fallback = [
+    { slug: 'male-health', label: 'Männliche Gesundheit', subcategories: ['Prostatitis und Männergesundheit', 'Potenz und Libido'] },
+    { slug: 'vision-hearing', label: 'Sehen und Hören', subcategories: ['Hören und Gleichgewicht'] },
+    { slug: 'metabolism', label: 'Stoffwechsel und Diabetes', subcategories: ['Stoffwechsel und Diabetes', 'Gewichtsmanagement'] },
+    { slug: 'heart', label: 'Herz und Blutdruck', subcategories: ['Herz und Blutdruck', 'Kreislauf und Energie'] },
+    { slug: 'digestive', label: 'Verdauung und Magen-Darm', subcategories: ['Verdauung und Magen-Darm', 'Darmsanierung'] },
+    { slug: 'joints', label: 'Gelenke und Bewegungsapparat', subcategories: ['Gelenke und Bewegungsapparat', 'Muskel und Rücken'] },
+    { slug: 'weight-loss', label: 'Gewichtsverlust und Detox', subcategories: ['Gewichtsverlust und Detox', 'Appetit und Stoffwechsel'] },
+    { slug: 'nerves', label: 'Nervensystem', subcategories: ['Nervensystem', 'Stress und Schlaf'] },
+    { slug: 'urinary', label: 'Urogenitalsystem', subcategories: ['Urogenitalsystem', 'Prostata und Harnwege'] },
+    { slug: 'venous-health', label: 'Venöse Gesundheit', subcategories: ['Venöse Gesundheit', 'Pflege für die Füße'] },
+    { slug: 'skin', label: 'Schönheit und Haut', subcategories: ['Anti-Aging-Pflege', 'Schönheit und Haut'] },
+    { slug: 'immune', label: 'Immunität und allgemeine Gesundheit', subcategories: ['Immunität und allgemeine Gesundheit', 'Detox und allgemeine Vitalität'] },
+  ]
+
+  try {
+    const s = readFileSync(file, 'utf8')
+    const parsed = JSON.parse(s || '[]')
+    return Array.isArray(parsed) && parsed.length ? parsed : fallback
+  } catch (e) {
+    return fallback
+  }
 }
 
 const DEFAULT_TITLE_TEMPLATE = 'Kaufen {name} Deutschland'
@@ -35,10 +65,16 @@ function getSeoDraft(product) {
   }
 }
 
-export default function AdminPage({ list, news, products, partners }) {
+export default function AdminPage({ list, news, products, partners, categories }) {
   const [newsList, setNewsList] = useState(news || [])
   const [productList, setProductList] = useState(products || [])
   const [partnerList, setPartnerList] = useState(partners || [])
+  const [categoryList, setCategoryList] = useState(categories || readCategories())
+  const [categoryForm, setCategoryForm] = useState({
+    slug: 'male-health',
+    label: 'Männliche Gesundheit',
+    subcategories: 'Prostatitis und Männergesundheit, Potenz und Libido',
+  })
   const [apiForm, setApiForm] = useState({
     baseUrl: 'https://core.metacpa.ru/api/offers/info',
     token: '',
@@ -59,25 +95,26 @@ export default function AdminPage({ list, news, products, partners }) {
     token: '',
     webmaster_id: '993341',
   })
-  const [manualProductForm, setManualProductForm] = useState({
-    name: '',
-    product_id: '',
-    category: 'male-health',
-    subcategory: 'Prostatitis und Männergesundheit',
-    price: '39',
-    img: '',
-    tracking_link: '',
-    top: 0,
-    main_offer: 0,
-    info: '',
-  })
-  const [manualProductLoading, setManualProductLoading] = useState(false)
+  useEffect(() => {
+    const resolvedCategories = Array.isArray(categories) && categories.length ? categories : readCategories()
+    setCategoryList(resolvedCategories)
+  }, [categories])
+  const [productAssignmentDrafts, setProductAssignmentDrafts] = useState({})
   const [apiStatus, setApiStatus] = useState('')
   const [apiLoading, setApiLoading] = useState(false)
   const [form, setForm] = useState({ title: '', excerpt: '', body: '', image: '' })
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+  const [nameDrafts, setNameDrafts] = useState(() => Object.fromEntries((products || []).map((product) => [getProductKey(product), String(product.name || '')])))
   const [seoDrafts, setSeoDrafts] = useState(() => Object.fromEntries((products || []).map((product) => [getProductKey(product), getSeoDraft(product)])))
+  const [seoAgentForm, setSeoAgentForm] = useState({
+    limit: 3,
+    categorySlug: 'all',
+  })
+  const [seoAgentDrafts, setSeoAgentDrafts] = useState([])
+  const [seoAgentAnalysis, setSeoAgentAnalysis] = useState(null)
+  const [seoAgentStatus, setSeoAgentStatus] = useState('')
+  const [seoAgentLoading, setSeoAgentLoading] = useState(false)
   const [aiLogs, setAiLogs] = useState(
     (products || []).filter((item) => item?.ai_classification).map((item) => ({
       id: item.product_id || item.id,
@@ -200,6 +237,95 @@ export default function AdminPage({ list, news, products, partners }) {
     }
   }
 
+  const handleAssignProductToCategory = async (product, category) => {
+    const productId = product.id || product.product_id
+    if (!productId || !category?.slug) return
+
+    const categorySubcategories = Array.isArray(category.subcategories) ? category.subcategories : []
+    const resolvedSubcategory = categorySubcategories.includes(product.subcategory)
+      ? product.subcategory
+      : categorySubcategories[0] || product.subcategory || 'Allgemeine Gesundheit'
+
+    try {
+      const response = await fetch('/api/products/top', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          partner_id: product.partner_id || 'metacpa_default',
+          category: category.slug,
+          subcategory: resolvedSubcategory,
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось добавить товар в категорию')
+
+      setProductList(json.products || [])
+      setStatus(`Товар «${product.name || 'без названия'}» добавлен в категорию «${category.label}»`)
+    } catch (error) {
+      setStatus(error.message || 'Ошибка добавления товара в категорию')
+    }
+  }
+
+  const handleRemoveProductFromCategory = async (product, category) => {
+    const productId = product.id || product.product_id
+    if (!productId || !category?.slug) return
+
+    try {
+      const response = await fetch('/api/products/top', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          partner_id: product.partner_id || 'metacpa_default',
+          category: '',
+          subcategory: '',
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось удалить товар из категории')
+
+      setProductList(json.products || [])
+      setStatus(`Товар «${product.name || 'без названия'}» удалён из категории «${category.label}»`)
+    } catch (error) {
+      setStatus(error.message || 'Ошибка удаления товара из категории')
+    }
+  }
+
+  const handleProductCategorySave = async (product) => {
+    const productId = product.id || product.product_id
+    if (!productId) return
+
+    const key = getProductKey(product)
+    const draft = productAssignmentDrafts[key] || {
+      category: product.category || categoryList[0]?.slug || 'male-health',
+      subcategory: product.subcategory || '',
+    }
+
+    try {
+      const response = await fetch('/api/products/top', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          partner_id: product.partner_id || 'metacpa_default',
+          category: draft.category,
+          subcategory: draft.subcategory,
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось привязать товар к категории')
+
+      setProductList(json.products || [])
+      setStatus(`Товар «${product.name || 'без названия'}» привязан к категории ${draft.category}`)
+    } catch (error) {
+      setStatus(error.message || 'Ошибка привязки товара')
+    }
+  }
+
   const handleSeoTemplateSave = async (product) => {
     const key = getProductKey(product)
     const draft = seoDrafts[key] || getSeoDraft(product)
@@ -226,63 +352,132 @@ export default function AdminPage({ list, news, products, partners }) {
     }
   }
 
-  const handleManualProductSave = async (event) => {
-    event.preventDefault()
+  const handleProductNameSave = async (product) => {
+    const productId = product.id || product.product_id
+    if (!productId) return
 
-    if (!manualProductForm.name.trim()) {
-      setStatus('Укажите название товара')
+    const key = getProductKey(product)
+    const draftName = String(nameDrafts[key] ?? product.name ?? '').trim()
+    if (!draftName) {
+      setStatus('Название товара не может быть пустым')
       return
     }
 
-    setManualProductLoading(true)
-    setStatus('')
-
     try {
-      const payload = {
-        action: 'create',
-        product: {
-          ...manualProductForm,
-          name: manualProductForm.name.trim(),
-          product_id: manualProductForm.product_id || String(Date.now()),
-          category: manualProductForm.category || 'male-health',
-          subcategory: manualProductForm.subcategory || 'Prostatitis und Männergesundheit',
-          price: manualProductForm.price || '39',
-          img: manualProductForm.img || '/img/placeholder.svg',
-          top: Number(manualProductForm.top) ? 1 : 0,
-          main_offer: Number(manualProductForm.main_offer) ? 1 : 0,
-          new: Number(manualProductForm.main_offer) ? 1 : 0,
-          tracking_link: manualProductForm.tracking_link || '',
-          info: manualProductForm.info || '',
-        },
-      }
-
       const response = await fetch('/api/products/top', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          id: productId,
+          partner_id: product.partner_id || 'metacpa_default',
+          name: draftName,
+        }),
       })
 
       const json = await response.json()
-      if (!response.ok) throw new Error(json.error || 'Не удалось добавить товар')
+      if (!response.ok) throw new Error(json.error || 'Не удалось обновить название товара')
 
-      setProductList(json.products || [])
-      setManualProductForm({
-        name: '',
-        product_id: '',
-        category: 'male-health',
-        subcategory: 'Prostatitis und Männergesundheit',
-        price: '39',
-        img: '',
-        tracking_link: '',
-        top: 0,
-        main_offer: 0,
-        info: '',
+      const nextProducts = json.products || []
+      setProductList(nextProducts)
+      setNameDrafts((prev) => {
+        const next = { ...prev }
+        for (const item of nextProducts) {
+          next[getProductKey(item)] = String(item.name || '')
+        }
+        return next
       })
-      setStatus(`Товар «${payload.product.name}» добавлен в каталог`)
+      setStatus(`Название товара обновлено: ${draftName}`)
     } catch (error) {
-      setStatus(error.message || 'Ошибка добавления товара')
+      setStatus(error.message || 'Ошибка обновления названия товара')
+    }
+  }
+
+  const handleSeoAgentRun = async (publish = false) => {
+    setSeoAgentLoading(true)
+    setSeoAgentStatus('')
+
+    try {
+      const response = await fetch('/api/seo-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: publish ? 'publish' : 'generate',
+          limit: Number(seoAgentForm.limit || 3),
+          categorySlug: seoAgentForm.categorySlug || 'all',
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось запустить SEO-агент')
+
+      if (publish) {
+        setSeoAgentDrafts([])
+        setNewsList((prev) => [...(json.published || []), ...prev])
+        const warningText = Array.isArray(json.warnings) && json.warnings.length ? `; предупреждения: ${json.warnings.length}` : ''
+        setSeoAgentStatus(`Опубликовано новостей: ${json.published?.length || 0}${warningText}`)
+      } else {
+        setSeoAgentDrafts(json.drafts || [])
+        setSeoAgentAnalysis(json.analysis || null)
+        setSeoAgentStatus(`Готово: ${json.drafts?.length || 0} черновиков`)
+      }
+    } catch (error) {
+      setSeoAgentStatus(error.message || 'Ошибка SEO-агента')
     } finally {
-      setManualProductLoading(false)
+      setSeoAgentLoading(false)
+    }
+  }
+
+  const handleCategorySave = async (event) => {
+    event.preventDefault()
+    const slug = String(categoryForm.slug || '').trim()
+    const label = String(categoryForm.label || '').trim()
+    const subcategories = String(categoryForm.subcategories || '')
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+
+    if (!slug || !label) {
+      setStatus('Укажите slug и название категории')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'upsert',
+          category: { slug, label, subcategories },
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось сохранить категорию')
+
+      const nextCategories = json.categories || []
+      setCategoryList(nextCategories)
+      setStatus(`Категория «${label}» сохранена`)
+    } catch (error) {
+      setStatus(error.message || 'Ошибка сохранения категории')
+    }
+  }
+
+  const handleCategoryDelete = async (slug) => {
+    try {
+      const response = await fetch('/api/categories', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug }),
+      })
+
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.error || 'Не удалось удалить категорию')
+
+      const nextCategories = json.categories || []
+      setCategoryList(nextCategories)
+      setStatus('Категория удалена')
+    } catch (error) {
+      setStatus(error.message || 'Ошибка удаления категории')
     }
   }
 
@@ -380,10 +575,44 @@ export default function AdminPage({ list, news, products, partners }) {
 
   const sidebarItems = [
     { id: 'requests', label: 'Заявки', count: list.length },
+    { id: 'news', label: 'Новости', count: newsList.length },
+    { id: 'categories', label: 'Категории', count: categoryList.length },
     { id: 'products', label: 'Товары', count: productList.length },
     { id: 'partners', label: 'Партнёры', count: partnerList.length },
     { id: 'top-products', label: 'Топ товары', count: productList.filter((item) => Number(item.top) === 1).length },
+    { id: 'seo-agent', label: 'SEO-Agent', count: seoAgentDrafts.length },
   ]
+  const categorySlugSet = new Set(categoryList.map((category) => String(category.slug || '')))
+  const uncategorizedProducts = productList.filter((product) => !categorySlugSet.has(String(product.category || '')))
+
+  useEffect(() => {
+    setProductAssignmentDrafts((prev) => {
+      const next = { ...prev }
+      for (const product of productList) {
+        const key = getProductKey(product)
+        const selectedCategory = product.category || categoryList[0]?.slug || 'male-health'
+        const selectedMeta = (categoryList.length ? categoryList : readCategories()).find((category) => category.slug === selectedCategory)
+        next[key] = {
+          category: selectedCategory,
+          subcategory: product.subcategory || selectedMeta?.subcategories?.[0] || '',
+        }
+      }
+      return next
+    })
+  }, [categoryList, productList])
+
+  useEffect(() => {
+    setNameDrafts((prev) => {
+      const next = { ...prev }
+      for (const product of productList) {
+        const key = getProductKey(product)
+        if (next[key] === undefined) {
+          next[key] = String(product.name || '')
+        }
+      }
+      return next
+    })
+  }, [productList])
 
   const [authState, setAuthState] = useState('checking')
   const [loginForm, setLoginForm] = useState({ username: '', password: '' })
@@ -431,7 +660,9 @@ export default function AdminPage({ list, news, products, partners }) {
 
       navigateToHiddenAdmin()
       setAuthState('otp')
-      setAuthStatus(`Код отправлен на ${json.email || 'post@ewige-vitalitaet.de'}. Код действует 60 секунд.`)
+      const deliveryLabel = json.method === 'telegram' ? 'Telegram' : json.email || 'post@ewige-vitalitaet.de'
+      const fallbackInfo = json.method === 'email' && json.message ? ` (${json.message})` : ''
+      setAuthStatus(`Код отправлен на ${deliveryLabel}${fallbackInfo}. Код действует 60 секунд.`)
     } catch (error) {
       setAuthStatus(error.message || 'Ошибка входа')
     } finally {
@@ -478,7 +709,7 @@ export default function AdminPage({ list, news, products, partners }) {
           <div className="mb-6">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Secure admin</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white">
-              {authState === 'otp' ? 'Подтверждение по email' : 'Вход в админку'}
+              {authState === 'otp' ? 'Подтверждение по Telegram' : 'Вход в админку'}
             </h1>
           </div>
 
@@ -490,7 +721,7 @@ export default function AdminPage({ list, news, products, partners }) {
                   value={otpForm.code}
                   onChange={(event) => setOtpForm({ code: event.target.value })}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
-                  placeholder="Введите код из письма"
+                  placeholder=""
                   autoComplete="one-time-code"
                 />
               </div>
@@ -513,7 +744,7 @@ export default function AdminPage({ list, news, products, partners }) {
                   value={loginForm.username}
                   onChange={(event) => setLoginForm({ ...loginForm, username: event.target.value })}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
-                  placeholder="ewige-admin"
+                  placeholder=""
                 />
               </div>
 
@@ -524,7 +755,7 @@ export default function AdminPage({ list, news, products, partners }) {
                   value={loginForm.password}
                   onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition focus:border-indigo-500"
-                  placeholder="••••••••••••"
+                  placeholder=""
                 />
               </div>
 
@@ -642,141 +873,210 @@ export default function AdminPage({ list, news, products, partners }) {
               </section>
             )}
 
+            {activeSection === 'news' && (
+              <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Новости</p>
+                    <h2 className="mt-1 text-2xl font-black text-slate-900">Публикации и удаление</h2>
+                  </div>
+                  <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700">
+                    Всего: {newsList.length}
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  {newsList.length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+                      Пока новостей нет.
+                    </div>
+                  ) : (
+                    newsList.map((item) => (
+                      <article key={item.id || item.slug || item.createdAt} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                        <div className="grid gap-4 p-4 sm:grid-cols-[120px_minmax(0,1fr)_auto] sm:items-center">
+                          <div className="overflow-hidden rounded-xl bg-white">
+                            {item.image ? (
+                              <img src={item.image} alt={item.title} className="h-24 w-full object-cover" />
+                            ) : (
+                              <div className="flex h-24 items-center justify-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">News</div>
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-bold text-slate-900">{item.title}</div>
+                            <div className="mt-1 line-clamp-2 text-sm text-slate-600">{item.excerpt || item.body || '—'}</div>
+                          </div>
+
+                          <div className="flex justify-start sm:justify-end">
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item.id || item.slug || item.createdAt)}
+                              className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+                            >
+                              Удалить
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </section>
+            )}
+
+            {activeSection === 'categories' && (
+              <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Категории</p>
+                  <h2 className="mt-1 text-2xl font-black text-slate-900">Категории и подкатегории товара</h2>
+                </div>
+
+                <form onSubmit={handleCategorySave} className="mt-5 space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-slate-700">Slug категории</label>
+                      <input
+                        value={categoryForm.slug}
+                        onChange={(event) => setCategoryForm({ ...categoryForm, slug: event.target.value })}
+                        className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
+                        placeholder="male-health"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-slate-700">Название категории</label>
+                      <input
+                        value={categoryForm.label}
+                        onChange={(event) => setCategoryForm({ ...categoryForm, label: event.target.value })}
+                        className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
+                        placeholder="Männliche Gesundheit"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-semibold text-slate-700">Подкатегории (через запятую)</label>
+                    <textarea
+                      value={categoryForm.subcategories}
+                      onChange={(event) => setCategoryForm({ ...categoryForm, subcategories: event.target.value })}
+                      className="h-28 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
+                      placeholder="Prostatitis und Männergesundheit, Potenz und Libido"
+                    />
+                  </div>
+
+                  <button type="submit" className="w-full rounded-xl bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-indigo-600">
+                    Сохранить категорию
+                  </button>
+                </form>
+
+                <div className="mt-6 space-y-3">
+                  {categoryList.map((category) => {
+                    const productsInCategory = productList.filter((product) => String(product.category || '') === category.slug)
+
+                    return (
+                      <div key={category.slug} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <div className="text-lg font-black text-slate-900">{category.label}</div>
+                            <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">{category.slug}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const selected = categoryList.find((item) => item.slug === category.slug)
+                                setCategoryForm({
+                                  slug: selected?.slug || '',
+                                  label: selected?.label || '',
+                                  subcategories: (selected?.subcategories || []).join(', '),
+                                })
+                              }}
+                              className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+                            >
+                              Выбрать
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleCategoryDelete(category.slug)}
+                              className="rounded-full border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700"
+                            >
+                              Удалить
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {(category.subcategories || []).map((subcategory) => (
+                            <span key={`${category.slug}-${subcategory}`} className="rounded-full bg-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700">
+                              {subcategory}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
+                          <div className="text-sm font-semibold text-slate-900">Товары в категории: {productsInCategory.length}</div>
+                          {productsInCategory.length === 0 ? (
+                            <div className="mt-2 text-xs text-slate-500">Пока нет товаров в этой категории.</div>
+                          ) : (
+                            <div className="mt-3 space-y-2">
+                              {productsInCategory.slice(0, 25).map((product) => (
+                                <div key={`${category.slug}-in-${product.id || product.product_id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-emerald-50 px-3 py-2">
+                                  <div className="min-w-0">
+                                    <div className="truncate text-sm font-medium text-slate-900">{product.name || 'Без названия'}</div>
+                                    <div className="text-xs text-slate-500">{product.subcategory || 'Без подкатегории'}</div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveProductFromCategory(product, category)}
+                                    className="shrink-0 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+                                  >
+                                    Удалить
+                                  </button>
+                                </div>
+                              ))}
+                              {productsInCategory.length > 25 && (
+                                <div className="text-xs text-slate-500">Показано 25 из {productsInCategory.length} товаров.</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
+                          <div className="text-sm font-semibold text-slate-900">Добавить товары в эту категорию</div>
+                          {uncategorizedProducts.length === 0 ? (
+                            <div className="mt-2 text-xs text-slate-500">Нет товаров без категории. Все товары уже распределены.</div>
+                          ) : (
+                            <div className="mt-3 space-y-2">
+                              {uncategorizedProducts.slice(0, 25).map((product) => (
+                                <div key={`${category.slug}-out-${product.id || product.product_id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                                  <div className="min-w-0">
+                                    <div className="truncate text-sm font-medium text-slate-900">{product.name || 'Без названия'}</div>
+                                    <div className="text-xs text-slate-500">{product.category || 'Без категории'}</div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAssignProductToCategory(product, category)}
+                                    className="shrink-0 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-600"
+                                  >
+                                    Добавить
+                                  </button>
+                                </div>
+                              ))}
+                              {uncategorizedProducts.length > 25 && (
+                                <div className="text-xs text-slate-500">Показано 25 из {uncategorizedProducts.length} товаров без категории.</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
+
             {activeSection === 'products' && (
               <>
                 <div className="grid gap-8 2xl:grid-cols-[1fr_1fr]">
-                  <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Товар</p>
-                      <h2 className="mt-1 text-2xl font-black text-slate-900">Добавить товар вручную</h2>
-                    </div>
-
-                    <form onSubmit={handleManualProductSave} className="mt-5 space-y-4">
-                      <div>
-                        <label className="mb-1 block text-sm font-semibold text-slate-700">Название товара</label>
-                        <input
-                          value={manualProductForm.name}
-                          onChange={(event) => setManualProductForm({ ...manualProductForm, name: event.target.value })}
-                          className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                          placeholder="VitalMax Premium"
-                        />
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="mb-1 block text-sm font-semibold text-slate-700">ID товара</label>
-                          <input
-                            value={manualProductForm.product_id}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, product_id: event.target.value })}
-                            className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                            placeholder="12345"
-                          />
-                        </div>
-                        <div>
-                          <label className="mb-1 block text-sm font-semibold text-slate-700">Цена, EUR</label>
-                          <input
-                            value={manualProductForm.price}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, price: event.target.value })}
-                            className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                            placeholder="39"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="mb-1 block text-sm font-semibold text-slate-700">Категория</label>
-                          <select
-                            value={manualProductForm.category}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, category: event.target.value })}
-                            className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                          >
-                            <option value="male-health">Männliche Gesundheit</option>
-                            <option value="vision-hearing">Sehen und Hören</option>
-                            <option value="metabolism">Stoffwechsel und Diabetes</option>
-                            <option value="heart">Herz und Blutdruck</option>
-                            <option value="digestive">Verdauung und Magen-Darm</option>
-                            <option value="joints">Gelenke und Bewegungsapparat</option>
-                            <option value="weight-loss">Gewichtsverlust und Detox</option>
-                            <option value="nerves">Nervensystem</option>
-                            <option value="urinary">Urogenitalsystem</option>
-                            <option value="venous-health">Venen- und Kreislaufgesundheit</option>
-                            <option value="skin">Schönheit und Haut</option>
-                            <option value="immune">Immunität und Allgemeine Gesundheit</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="mb-1 block text-sm font-semibold text-slate-700">Подкатегория</label>
-                          <input
-                            value={manualProductForm.subcategory}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, subcategory: event.target.value })}
-                            className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                            placeholder="Prostatitis und Männergesundheit"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="mb-1 block text-sm font-semibold text-slate-700">Ссылка на изображение</label>
-                        <input
-                          value={manualProductForm.img}
-                          onChange={(event) => setManualProductForm({ ...manualProductForm, img: event.target.value })}
-                          className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                          placeholder="/img/your-product.png"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="mb-1 block text-sm font-semibold text-slate-700">Ссылка на оффер</label>
-                        <input
-                          value={manualProductForm.tracking_link}
-                          onChange={(event) => setManualProductForm({ ...manualProductForm, tracking_link: event.target.value })}
-                          className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                          placeholder="https://..."
-                        />
-                      </div>
-
-                      <div>
-                        <label className="mb-1 block text-sm font-semibold text-slate-700">Краткое описание</label>
-                        <textarea
-                          value={manualProductForm.info}
-                          onChange={(event) => setManualProductForm({ ...manualProductForm, info: event.target.value })}
-                          className="h-24 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-indigo-500 focus:bg-white"
-                          placeholder="Кратко о пользе товара..."
-                        />
-                      </div>
-
-                      <div className="flex flex-wrap gap-3">
-                        <label className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                          <input
-                            type="checkbox"
-                            checked={Number(manualProductForm.top) === 1}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, top: event.target.checked ? 1 : 0 })}
-                          />
-                          Топ товар
-                        </label>
-                        <label className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                          <input
-                            type="checkbox"
-                            checked={Number(manualProductForm.main_offer) === 1}
-                            onChange={(event) => setManualProductForm({ ...manualProductForm, main_offer: event.target.checked ? 1 : 0 })}
-                          />
-                          Главный оффер
-                        </label>
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={manualProductLoading}
-                        className="w-full rounded-xl bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:bg-slate-400"
-                      >
-                        {manualProductLoading ? 'Сохраняем...' : 'Добавить товар в каталог'}
-                      </button>
-
-                      {status && <div className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{status}</div>}
-                    </form>
-                  </section>
-
                   <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                     <h2 className="text-2xl font-black text-slate-900">Импорт товаров через API</h2>
                     <p className="mt-2 text-sm text-gray-600">Импорт идёт строго по Германии (DE), без мульти-geo вариаций, а товары дублируются по ID оффера. Если нужен точный импорт одного товара — просто вставь его Offer ID / product ID в поле ниже; webmaster ID нужен только если сам API его требует.</p>
@@ -964,55 +1264,146 @@ export default function AdminPage({ list, news, products, partners }) {
                     </div>
 
                     <div className="space-y-3">
-                      {productList.map((product) => (
-                        <div key={product.id || product.product_id} className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-3">
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                              {product.img && (
-                                <img src={product.img} alt={product.name} className="h-12 w-12 rounded-xl object-cover" />
-                              )}
-                              <div>
-                                <div className="font-medium text-gray-900">{product.name}</div>
-                                <div className="text-xs text-gray-500">{product.category || 'Товар'}</div>
+                      {productList.map((product) => {
+                        const key = getProductKey(product)
+                        const assignmentDraft = productAssignmentDrafts[key] || {
+                          category: product.category || categoryList[0]?.slug || 'male-health',
+                          subcategory: product.subcategory || '',
+                        }
+                        const selectedCategoryMeta = (categoryList.length ? categoryList : readCategories()).find((category) => category.slug === assignmentDraft.category) || null
+
+                        return (
+                          <div key={product.id || product.product_id} className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-3">
+                            <div className="flex items-center justify-between gap-4">
+                              <div className="flex items-center gap-3">
+                                {product.img && (
+                                  <img src={product.img} alt={product.name} className="h-12 w-12 rounded-xl object-cover" />
+                                )}
+                                <div>
+                                  <div className="font-medium text-gray-900">{product.name}</div>
+                                  <div className="text-xs text-gray-500">{product.category || 'Товар'}</div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleTopToggle(product)}
+                                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                    Number(product.top) === 1
+                                      ? 'bg-amber-400 text-amber-950 hover:bg-amber-300'
+                                      : 'bg-slate-900 text-white hover:bg-slate-700'
+                                  }`}
+                                >
+                                  {Number(product.top) === 1 ? 'Топ' : 'Сделать топ'}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleMainOfferToggle(product)}
+                                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                    Number(product.main_offer) === 1 || Number(product.new) === 1
+                                      ? 'bg-emerald-500 text-white hover:bg-emerald-400'
+                                      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  {Number(product.main_offer) === 1 || Number(product.new) === 1 ? 'Главный' : 'Сделать главным'}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteProduct(product)}
+                                  className="rounded-full border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+                                >
+                                  Удалить
+                                </button>
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                              <button
-                                type="button"
-                                onClick={() => handleTopToggle(product)}
-                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                  Number(product.top) === 1
-                                    ? 'bg-amber-400 text-amber-950 hover:bg-amber-300'
-                                    : 'bg-slate-900 text-white hover:bg-slate-700'
-                                }`}
-                              >
-                                {Number(product.top) === 1 ? 'Топ' : 'Сделать топ'}
-                              </button>
+                            <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                              <div className="mb-3">
+                                <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Название товара</label>
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                  <input
+                                    value={nameDrafts[key] ?? product.name ?? ''}
+                                    onChange={(event) => {
+                                      const value = event.target.value
+                                      setNameDrafts((prev) => ({
+                                        ...prev,
+                                        [key]: value,
+                                      }))
+                                    }}
+                                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                                    placeholder="Введите название товара"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleProductNameSave(product)}
+                                    className="rounded-xl bg-indigo-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                                  >
+                                    Сохранить название
+                                  </button>
+                                </div>
+                              </div>
 
+                              <div className="mb-2 text-sm font-semibold text-slate-800">Привязка товара к категории</div>
+                              <div className="grid gap-3 sm:grid-cols-2">
+                                <div>
+                                  <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Категория</label>
+                                  <select
+                                    value={assignmentDraft.category}
+                                    onChange={(event) => {
+                                      const nextCategory = event.target.value
+                                      const nextMeta = (categoryList.length ? categoryList : readCategories()).find((category) => category.slug === nextCategory)
+                                      setProductAssignmentDrafts((prev) => ({
+                                        ...prev,
+                                        [key]: {
+                                          category: nextCategory,
+                                          subcategory: nextMeta?.subcategories?.[0] || prev[key]?.subcategory || '',
+                                        },
+                                      }))
+                                    }}
+                                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                                  >
+                                    {(categoryList.length ? categoryList : readCategories()).map((category) => (
+                                      <option key={`product-${key}-${category.slug}`} value={category.slug}>{category.label}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Подкатегория</label>
+                                  <input
+                                    value={assignmentDraft.subcategory}
+                                    onChange={(event) => {
+                                      setProductAssignmentDrafts((prev) => ({
+                                        ...prev,
+                                        [key]: {
+                                          ...(prev[key] || assignmentDraft),
+                                          subcategory: event.target.value,
+                                        },
+                                      }))
+                                    }}
+                                    list={`subcategory-options-${key}`}
+                                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                                    placeholder="Выберите или напишите"
+                                  />
+                                  <datalist id={`subcategory-options-${key}`}>
+                                    {(selectedCategoryMeta?.subcategories || []).map((subcategory) => (
+                                      <option key={`${key}-${subcategory}`} value={subcategory} />
+                                    ))}
+                                  </datalist>
+                                </div>
+                              </div>
                               <button
                                 type="button"
-                                onClick={() => handleMainOfferToggle(product)}
-                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                  Number(product.main_offer) === 1 || Number(product.new) === 1
-                                    ? 'bg-emerald-500 text-white hover:bg-emerald-400'
-                                    : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                                }`}
+                                onClick={() => handleProductCategorySave(product)}
+                                className="mt-3 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-600"
                               >
-                                {Number(product.main_offer) === 1 || Number(product.new) === 1 ? 'Главный' : 'Сделать главным'}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteProduct(product)}
-                                className="rounded-full border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
-                              >
-                                Удалить
+                                Сохранить категорию
                               </button>
                             </div>
-                          </div>
 
-                          <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
+                            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
                             <div className="mb-2 text-sm font-semibold text-slate-800">Шаблоны SEO для товара</div>
                             <div className="space-y-3">
                               <div>
@@ -1074,7 +1465,8 @@ export default function AdminPage({ list, news, products, partners }) {
                             </div>
                           )}
                         </div>
-                      ))}
+                       )
+                     })}
                     </div>
                   </section>
                 </div>
@@ -1203,6 +1595,127 @@ export default function AdminPage({ list, news, products, partners }) {
                 </div>
               </section>
             )}
+
+            {activeSection === 'seo-agent' && (
+              <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">SEO-Agent</p>
+                    <h2 className="mt-1 text-2xl font-black text-slate-900">Автогенерация новостей по товарам</h2>
+                    <p className="mt-2 max-w-3xl text-sm text-slate-600">
+                      Агент анализирует каталог и пишет живые новости на немецком языке в человеческом стиле — без шаблонного AI-текста.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700">
+                    Черновиков: {seoAgentDrafts.length}
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Категория</label>
+                    <select
+                      value={seoAgentForm.categorySlug}
+                      onChange={(event) => setSeoAgentForm((prev) => ({ ...prev, categorySlug: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:border-indigo-500"
+                    >
+                      <option value="all">Alle Kategorien</option>
+                      {categoryList.map((category) => (
+                        <option key={`seo-agent-${category.slug}`} value={category.slug}>
+                          {category.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Сколько новостей создать</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={seoAgentForm.limit}
+                      onChange={(event) => setSeoAgentForm((prev) => ({ ...prev, limit: event.target.value }))}
+                      className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    disabled={seoAgentLoading}
+                    onClick={() => handleSeoAgentRun(false)}
+                    className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {seoAgentLoading ? 'Анализ...' : 'Анализировать сайт'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={seoAgentLoading}
+                    onClick={() => handleSeoAgentRun(true)}
+                    className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {seoAgentLoading ? 'Публикация...' : 'Создать и опубликовать новости'}
+                  </button>
+                </div>
+
+                {seoAgentStatus && (
+                  <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                    {seoAgentStatus}
+                  </div>
+                )}
+
+                {seoAgentAnalysis && (
+                  <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+                    <div className="text-sm font-semibold text-slate-800">Краткий анализ каталога</div>
+                    <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-3">
+                      <div>Товаров: {seoAgentAnalysis.productCount}</div>
+                      <div>Доступно тем: {seoAgentAnalysis.availableCount}</div>
+                      <div>Новостей уже есть: {seoAgentAnalysis.existingNewsCount}</div>
+                    </div>
+                    {Array.isArray(seoAgentAnalysis.topCategories) && seoAgentAnalysis.topCategories.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {seoAgentAnalysis.topCategories.map((category) => (
+                          <span key={category.slug} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                            {category.label} · {category.count}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-5 space-y-4">
+                  {seoAgentDrafts.length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+                      Пока нет черновиков. Запустите анализ, и агент предложит готовые немецкие новости на основе каталога.
+                    </div>
+                  ) : (
+                    seoAgentDrafts.map((draft) => (
+                      <article key={`${draft.sourceProductId || draft.title}`} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <h3 className="text-lg font-bold text-slate-900">{draft.title}</h3>
+                            <p className="mt-1 text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                              {draft.sourceCategory || 'SEO-Agent'} · {draft.sourceProductName || 'Produkt'}
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                            {draft.sourceSubcategory || 'Ohne Unterkategorie'}
+                          </span>
+                        </div>
+
+                        {draft.excerpt && <p className="mt-3 text-sm leading-6 text-slate-600">{draft.excerpt}</p>}
+                        <div className="mt-3 whitespace-pre-line rounded-xl bg-white p-3 text-sm leading-7 text-slate-700">
+                          {draft.body}
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </section>
+            )}
           </div>
         </div>
       </main>
@@ -1215,5 +1728,6 @@ export async function getServerSideProps() {
   const news = readNews()
   const products = readProducts()
   const partners = readPartners()
-  return { props: { list, news, products, partners } }
+  const categories = readCategories()
+  return { props: { list, news, products, partners, categories } }
 }

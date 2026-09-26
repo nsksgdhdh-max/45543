@@ -12,7 +12,7 @@ import {
   resolveProductImage,
   toEnglishSlug,
 } from '../../../lib/product'
-import { buildCollectionPageSchemaFromProducts, buildProductSchema } from '../../../lib/schema'
+import { buildCollectionPageSchemaFromProducts, buildFaqSchema, buildProductSchema, buildWebPageSchema } from '../../../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -159,18 +159,16 @@ function getRelatedProducts(product, allProducts = []) {
   }
 
   const currentId = product.product_id || product.id
-  const currentFamily = inferFamilyCategory(product)
+  const currentFamily = String(product.category || '')
   const currentSubcategory = inferSubcategoryLabel(product)
+  if (!currentFamily) return []
 
   return allProducts
     .filter((item) => {
       const itemId = item.product_id || item.id
       if (itemId === currentId) return false
 
-      const family = inferFamilyCategory(item)
-      if (!family || !currentFamily) return false
-
-      return family.slug === currentFamily.slug
+      return String(item.category || '') === currentFamily
     })
     .sort((a, b) => {
       const aScore =
@@ -212,13 +210,43 @@ export default function SubcategoryPage({
    const price = priceForProduct(product)
     const characteristics = getProductCharacteristics(product)
     const seo = buildProductSeo(product, price)
+    const productImage = resolveProductImage(product.img)
+    const productPageSchema = buildWebPageSchema({
+     name: seo.title,
+     description: seo.description,
+     url: canonicalUrl,
+    })
+    const productFaqSchema = buildFaqSchema([
+     {
+       question: `Wie schnell wird ${product.name} geliefert?`,
+       answer: 'Die Lieferung innerhalb Deutschlands dauert in der Regel 3–7 Tage.',
+     },
+     {
+       question: `Für wen ist ${product.name} geeignet?`,
+       answer: 'Das Produkt ist für den täglichen Einsatz gedacht. Prüfen Sie vor der Bestellung die Produktinformationen auf der Seite.',
+     },
+    ])
 
     return (
      <>
        <Head>
          <title>{seo.title}</title>
          <meta name="description" content={seo.description} />
+         <meta name="keywords" content={seo.keywords} />
+         <meta property="og:type" content="product" />
+         <meta property="og:title" content={seo.title} />
+         <meta property="og:description" content={seo.description} />
+         <meta property="og:url" content={canonicalUrl} />
+         <meta property="og:image" content={productImage} />
+         <meta name="twitter:card" content="summary_large_image" />
+         <meta name="twitter:title" content={seo.title} />
+         <meta name="twitter:description" content={seo.description} />
+         <meta name="twitter:image" content={productImage} />
          <link rel="canonical" href={canonicalUrl} />
+         <script
+           type="application/ld+json"
+           dangerouslySetInnerHTML={{ __html: JSON.stringify(productPageSchema) }}
+         />
          <script
            type="application/ld+json"
            dangerouslySetInnerHTML={{
@@ -226,6 +254,10 @@ export default function SubcategoryPage({
                buildProductSchema(product, canonicalUrl),
              ),
            }}
+         />
+         <script
+           type="application/ld+json"
+           dangerouslySetInnerHTML={{ __html: JSON.stringify(productFaqSchema) }}
          />
        </Head>
 
@@ -303,7 +335,7 @@ export default function SubcategoryPage({
               <div className="bg-gradient-to-br from-slate-100 via-white to-slate-50 p-3 sm:p-8 lg:p-10 max-[350px]:p-2.5">
                 <div className="mb-4 flex items-center justify-between gap-2 sm:mb-5 sm:gap-3">
                   <span className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-700 sm:px-3 sm:text-[10px]">
-                    {product.subcategory || product.category || 'Produkt'}
+                    {inferSubcategoryLabel(product) || product.category || 'Produkt'}
                   </span>
                   <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-emerald-700 sm:px-3 sm:text-[10px]">
                     Lieferung 3–7 Tage
@@ -537,7 +569,28 @@ export default function SubcategoryPage({
       <Head>
         <title>{subcategoryMeta.title}</title>
         <meta name="description" content={subcategoryMeta.description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={subcategoryMeta.title} />
+        <meta property="og:description" content={subcategoryMeta.description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={subcategoryMeta.title} />
+        <meta name="twitter:description" content={subcategoryMeta.description} />
+        <meta name="twitter:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildWebPageSchema({
+                name: sub,
+                description: subcategoryMeta.description,
+                url: canonicalUrl,
+              }),
+            ),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -559,6 +612,23 @@ export default function SubcategoryPage({
                   { name: sub, url: canonicalUrl },
                 ],
               }),
+            ),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildFaqSchema([
+                {
+                  question: `Welche Produkte finde ich in ${sub}?`,
+                  answer: `In dieser Unterkategorie sehen Sie Produkte zum Thema ${sub} innerhalb von ${categoryLabels[slug] || slug}.`,
+                },
+                {
+                  question: 'Wie komme ich zur vollständigen Kategorie?',
+                  answer: 'Über den Button „Zurück zur Kategorie“ gelangen Sie direkt zur übergeordneten Kategorieseite.',
+                },
+              ]),
             ),
           }}
         />
@@ -838,9 +908,7 @@ export async function getServerSideProps(context) {
    * является ли URL страницей конкретного Produkt.
    */
   const productMatch = products.find((p) => {
-    const family = inferFamilyCategory(p)
-
-    const sameFamily = family.slug === slug
+    const sameFamily = String(p?.category || '') === slug
 
     const sameName =
       toEnglishSlug(p.name || '') === decodedSub
@@ -866,11 +934,11 @@ export async function getServerSideProps(context) {
    * Andernfalls handelt es sich um eine Unterkategorieseite.
    */
   const filtered = products.filter((p) => {
-    const family = inferFamilyCategory(p)
+    const productSubcategory = inferSubcategoryLabel(p)
 
     return (
-      family.slug === slug &&
-      inferSubcategoryLabel(p) === decodedSub
+      String(p?.category || '') === slug &&
+      productSubcategory === decodedSub
     )
   })
 

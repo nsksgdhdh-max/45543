@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { addToCartAndGo } from '../../lib/cart'
 import { inferFamilyCategory } from '../../lib/catalog'
 import { buildProductSeo, getProductIdFromParam, resolveProductImage, toEnglishSlug } from '../../lib/product'
-import { buildProductSchema } from '../../lib/schema'
+import { buildBreadcrumbSchema, buildFaqSchema, buildProductSchema, buildWebPageSchema } from '../../lib/schema'
 
 const CATEGORY_LABELS = {
   'male-health': 'Männliche Gesundheit',
@@ -32,6 +32,13 @@ function priceForProduct(product) {
 }
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+function toAbsoluteUrl(value) {
+  const input = String(value || '')
+  if (!input) return `${CANONICAL_BASE}/img/placeholder.svg`
+  if (input.startsWith('http://') || input.startsWith('https://')) return input
+  return `${CANONICAL_BASE}${input.startsWith('/') ? '' : '/'}${input}`
+}
 
 export default function ProductDetailPage({ product }) {
   const [orderSent, setOrderSent] = useState(false)
@@ -103,6 +110,28 @@ export default function ProductDetailPage({ product }) {
   }
 
   const canonicalUrl = `${CANONICAL_BASE}/categories/${toEnglishSlug(product.category || product.subcategory || 'male-health')}/${toEnglishSlug(product.name || '')}`
+  const productImage = toAbsoluteUrl(resolveProductImage(product.img))
+  const productPageSchema = buildWebPageSchema({
+    name: seo.title,
+    description: seo.description,
+    url: canonicalUrl,
+  })
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Startseite', url: `${CANONICAL_BASE}/` },
+    { name: 'Katalog', url: `${CANONICAL_BASE}/categories` },
+    { name: product.category || 'Produkt', url: `${CANONICAL_BASE}/categories/${toEnglishSlug(product.category || 'male-health')}` },
+    { name: product.name || 'Produkt', url: canonicalUrl },
+  ])
+  const productFaqSchema = buildFaqSchema([
+    {
+      question: `Wie schnell wird ${product.name} geliefert?`,
+      answer: 'Die Lieferung innerhalb Deutschlands dauert in der Regel 3–7 Tage.',
+    },
+    {
+      question: `Wie bestelle ich ${product.name}?`,
+      answer: 'Öffnen Sie die Produktseite, klicken Sie auf „Kaufen“ oder „In den Warenkorb“ und folgen Sie dem Bestellprozess.',
+    },
+  ])
 
   return (
     <>
@@ -110,14 +139,33 @@ export default function ProductDetailPage({ product }) {
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />
         <meta name="keywords" content={seo.keywords} />
+        <meta property="og:type" content="product" />
         <meta property="og:title" content={seo.title} />
         <meta property="og:description" content={seo.description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={productImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={productImage} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productPageSchema) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(buildProductSchema(product, canonicalUrl)),
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productFaqSchema) }}
         />
       </Head>
 

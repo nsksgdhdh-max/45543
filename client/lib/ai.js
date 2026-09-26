@@ -52,7 +52,7 @@ function classifyProductLocally({ name, description, info, fallbackFamily = 'imm
       return {
         familySlug: rule.key,
         familyLabel: resolveKnownFamilyLabel(rule.key),
-        subcategoryLabel: rule.key === 'venous-health' ? 'Krampfadern' : fallbackSubcategory,
+        subcategoryLabel: resolveCanonicalSubcategoryLabel(rule.key, input, fallbackSubcategory),
         shouldCreateNewCategory: false,
         reason: 'Local keyword classification',
       }
@@ -62,7 +62,7 @@ function classifyProductLocally({ name, description, info, fallbackFamily = 'imm
   return {
     familySlug: fallbackFamily,
     familyLabel: resolveKnownFamilyLabel(fallbackFamily),
-    subcategoryLabel: fallbackSubcategory,
+    subcategoryLabel: resolveCanonicalSubcategoryLabel(fallbackFamily, input, fallbackSubcategory),
     shouldCreateNewCategory: false,
     reason: 'Local keyword fallback',
   }
@@ -196,6 +196,61 @@ function normalizeCategorySlug(value, fallback = 'immune') {
   return slug || fallback
 }
 
+function resolveCanonicalSubcategoryLabel(familySlug, text, fallbackSubcategory = '') {
+  const normalized = normalizeProductText(text)
+
+  switch (String(familySlug || '').trim()) {
+    case 'male-health':
+      return /(prostat|prostate|male health|андролог|мужск)/i.test(normalized)
+        ? 'Prostatitis und Männergesundheit'
+        : 'Potenz und Libido'
+    case 'vision-hearing':
+      return 'Hören und Gleichgewicht'
+    case 'metabolism':
+      return /(diabet|glucose|glukose|sugar|insulin|metab)/i.test(normalized)
+        ? 'Stoffwechsel und Diabetes'
+        : 'Gewichtsmanagement'
+    case 'heart':
+      return /(blood pressure|pressure|hypert|heart|cardio|circulation|давлен|сердц)/i.test(normalized)
+        ? 'Herz und Blutdruck'
+        : 'Kreislauf und Energie'
+    case 'digestive':
+      return /(digest|gut|stomach|gastro|желуд|киш|пищевар)/i.test(normalized)
+        ? 'Verdauung und Magen-Darm'
+        : 'Darmsanierung'
+    case 'joints':
+      return /(joint|arthritis|bone|back|spine|muscle|сустав|мышц|спин|артро|хондро)/i.test(normalized)
+        ? 'Gelenke und Bewegungsapparat'
+        : 'Muskel und Rücken'
+    case 'weight-loss':
+      return /(weight loss|slim|slimming|fat|burn|похуд|жир|стройн)/i.test(normalized)
+        ? 'Gewichtsverlust und Detox'
+        : 'Appetit und Stoffwechsel'
+    case 'nerves':
+      return /(stress|sleep|anxiety|insomnia|nerve|сон|стресс|тревож|нерв)/i.test(normalized)
+        ? 'Stress und Schlaf'
+        : 'Nervensystem'
+    case 'urinary':
+      return /(prostate|urinary|kidney|bladder|cystitis|моче|почек|уролог|цистит)/i.test(normalized)
+        ? 'Prostata und Harnwege'
+        : 'Urogenitalsystem'
+    case 'venous-health':
+      return /(varicose|vein|venous|krampfadern|вены|веноз)/i.test(normalized)
+        ? 'Venöse Gesundheit'
+        : 'Pflege für die Füße'
+    case 'skin':
+      return /(anti[- ]?age|beauty|skin|cosmetic|skincare|кожа|дерма|крем|wrinkle)/i.test(normalized)
+        ? 'Anti-Aging-Pflege'
+        : 'Schönheit und Haut'
+    case 'immune':
+      return /(detox|parasite|immune|vitamin|general health|общего|здоровье|антиокс|паразит)/i.test(normalized)
+        ? 'Immunität und allgemeine Gesundheit'
+        : 'Detox und allgemeine Vitalität'
+    default:
+      return fallbackSubcategory || 'Allgemeine Gesundheit'
+  }
+}
+
 function resolveKnownFamilyLabel(fallbackFamily) {
   const lookup = {
     'male-health': 'Männliche Gesundheit',
@@ -312,7 +367,11 @@ export async function classifyProductWithAi({
 
     const familyLabel = String(parsed.family_label || parsed.familyLabel || resolveKnownFamilyLabel(fallbackFamily) || 'Immunität und allgemeine Gesundheit').trim()
     const familySlug = normalizeCategorySlug(parsed.family_slug || parsed.familySlug || familyLabel, fallbackFamily)
-    const subcategoryLabel = String(parsed.subcategory_label || parsed.subcategoryLabel || fallbackSubcategory || 'Allgemeine Gesundheit').trim()
+    const subcategoryLabel = resolveCanonicalSubcategoryLabel(
+      shouldCreateNewCategory && newCategorySlug ? newCategorySlug : familySlug,
+      parsed.subcategory_label || parsed.subcategoryLabel || fallbackSubcategory || 'Allgemeine Gesundheit',
+      fallbackSubcategory || 'Allgemeine Gesundheit',
+    )
     const shouldCreateNewCategory = Boolean(parsed.create_new_category || parsed.createNewCategory)
     const newCategoryLabel = String(parsed.new_category_label || parsed.newCategoryLabel || '').trim()
     const newCategorySlug = normalizeCategorySlug(parsed.new_category_slug || parsed.newCategorySlug || newCategoryLabel || familyLabel, familySlug)
@@ -330,7 +389,7 @@ export async function classifyProductWithAi({
     return {
       familySlug: fallbackFamily,
       familyLabel: resolveKnownFamilyLabel(fallbackFamily),
-      subcategoryLabel: fallbackSubcategory || 'Allgemeine Gesundheit',
+      subcategoryLabel: resolveCanonicalSubcategoryLabel(fallbackFamily, name || description || info || '', fallbackSubcategory || 'Allgemeine Gesundheit'),
       shouldCreateNewCategory: false,
       reason: String(error?.message || 'AI fallback used'),
     }

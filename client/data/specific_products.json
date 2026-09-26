@@ -111,7 +111,7 @@
     "user_access": 1,
     "epc": 17.83,
     "category": "vision-hearing",
-    "subcategory": "Sehen und Augen",
+    "subcategory": "Hören und Gleichgewicht",
     "main_offer": 0,
     "new": 0
   },
@@ -140,7 +140,7 @@
     "user_access": 1,
     "epc": 1.12,
     "category": "male-health",
-    "subcategory": "Potenz und Libido",
+    "subcategory": "Prostatitis und Männergesundheit",
     "main_offer": 0,
     "new": 0
   },
@@ -200,7 +200,7 @@
     "category": "joints",
     "main_offer": 0,
     "new": 0,
-    "subcategory": "Gesundheit der Gelenke"
+    "subcategory": "Gelenke und Bewegungsapparat"
   },
   {
     "id": "6908",
@@ -227,7 +227,7 @@
     "user_access": 1,
     "epc": 15.03,
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "main_offer": 0,
     "new": 0
   },
@@ -256,7 +256,7 @@
     "user_access": 1,
     "epc": 5.96,
     "category": "urinary",
-    "subcategory": "Urogenitalsystem",
+    "subcategory": "Prostata und Harnwege",
     "main_offer": 0,
     "new": 0
   },
@@ -285,7 +285,7 @@
     "user_access": 1,
     "epc": 9.27,
     "category": "immune",
-    "subcategory": "Allgemeine Gesundheit",
+    "subcategory": "Immunität und allgemeine Gesundheit",
     "main_offer": 0,
     "new": 0
   },
@@ -314,7 +314,7 @@
     "user_access": 1,
     "epc": 2.81,
     "category": "digestive",
-    "subcategory": "Verdauung und Reinigung",
+    "subcategory": "Verdauung und Magen-Darm",
     "main_offer": 0,
     "new": 0
   },
@@ -343,7 +343,7 @@
     "user_access": 1,
     "epc": 2.19,
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "main_offer": 0,
     "new": 0
   },
@@ -401,7 +401,7 @@
     "user_access": 1,
     "epc": 13.33,
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "main_offer": 0,
     "new": 0
   },
@@ -430,7 +430,7 @@
     "user_access": 1,
     "epc": 2.73,
     "category": "joints",
-    "subcategory": "Gesundheit der Gelenke",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "main_offer": 0,
     "new": 0
   },
@@ -459,7 +459,7 @@
     "user_access": 1,
     "epc": 2.63,
     "category": "immune",
-    "subcategory": "Allgemeine Gesundheit",
+    "subcategory": "Immunität und allgemeine Gesundheit",
     "main_offer": 0,
     "new": 0
   },
@@ -546,7 +546,7 @@
     "user_access": 1,
     "epc": 0,
     "category": "joints",
-    "subcategory": "Gesundheit der Gelenke",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "main_offer": 0,
     "new": 0
   },
@@ -575,7 +575,7 @@
     "user_access": 1,
     "epc": 31.52,
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "main_offer": 0,
     "new": 0
   },
@@ -662,7 +662,7 @@
     "user_access": 1,
     "epc": 5.16,
     "category": "weight-loss",
-    "subcategory": "Gewichtsverlust und Gewichtsmanagement",
+    "subcategory": "Gewichtsverlust und Detox",
     "main_offer": 0,
     "new": 0
   },
@@ -720,7 +720,7 @@
     "user_access": 1,
     "epc": 11.18,
     "category": "digestive",
-    "subcategory": "Verdauung und Reinigung",
+    "subcategory": "Verdauung und Magen-Darm",
     "main_offer": 0,
     "new": 0
   },
@@ -749,7 +749,7 @@
     "user_access": 1,
     "epc": 5.34,
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "main_offer": 0,
     "new": 0
   },
@@ -778,7 +778,7 @@
     "user_access": 1,
     "epc": 3.57,
     "category": "weight-loss",
-    "subcategory": "Gewichtsverlust und Gewichtsmanagement",
+    "subcategory": "Gewichtsverlust und Detox",
     "main_offer": 0,
     "new": 0
   },
@@ -807,7 +807,7 @@
     "user_access": 1,
     "epc": 6.27,
     "category": "joints",
-    "subcategory": "Gesundheit der Gelenke",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "main_offer": 0,
     "new": 0
   },
@@ -836,7 +836,7 @@
     "user_access": 1,
     "epc": 3.28,
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "main_offer": 0,
     "new": 0
   },
@@ -865,7 +865,7 @@
     "user_access": 1,
     "epc": 0.62,
     "category": "digestive",
-    "subcategory": "Verdauung und Reinigung",
+    "subcategory": "Verdauung und Magen-Darm",
     "main_offer": 0,
     "new": 0
   },
@@ -894,7 +894,7 @@
     "user_access": 1,
     "epc": 1.61,
     "category": "weight-loss",
-    "subcategory": "Gewichtsverlust und Gewichtsmanagement",
+    "subcategory": "Gewichtsverlust und Detox",
     "main_offer": 0,
     "new": 0
   },
@@ -952,7 +952,7 @@
     "user_access": 1,
     "epc": 1.06,
     "category": "weight-loss",
-    "subcategory": "Gewichtsverlust und Gewichtsmanagement",
+    "subcategory": "Appetit und Stoffwechsel",
     "main_offer": 0,
     "new": 0
   },
@@ -965,7 +965,7 @@
     "info": "Joint gel ArtiZynt is an innovative remedy for joint pain. It contains useful substances, which stops the destruction of joints and starts the process of regeneration of damaged tissues. It is forbidden to use doctor Eckart von Hirschhausen in geo Germany",
     "img": "/img/offers/artizynt-gel-62ecaf8f7936.webp",
     "category": "joints",
-    "subcategory": "Gelenkschmerzen",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -975,9 +975,10 @@
     "ai_classification": {
       "reason": "Das Produkt ist ein Gelenkgel zur Linderung von Gelenkschmerzen und zur Geweberegeneration, daher passt es zu den Gelenken. Die Unterkategorie „Gelenkschmerzen“ eignet sich für diese Art lokaler Gelenkbehandlung.",
       "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Gelenkschmerzen",
+      "subcategory_label": "Gelenke und Bewegungsapparat",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "joints"
     },
     "target": [
       {
@@ -1009,7 +1010,8 @@
       "family_label": "Schönheit und Haut",
       "subcategory_label": "Anti-Aging-Pflege",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "skin"
     },
     "target": [
       {
@@ -1029,7 +1031,7 @@
     "info": "Capsules for prostatitis Adalt approach is prohibited! It removes the inflammation process, removes pain syndrome, normalizes urination, improves sexual life. The tool is balanced, contains high levels of useful substances and micronutrients. Reception: One capsule twice a day after meals in the morning and evening 20 capsules for 10 days. Composition: Pumpkins, anchors, shovel, ginseng and vitamin C It is prohibited to use doctor Eckart von Hirschhausen in GEO Germany",
     "img": "/img/offers/prostalis-c94d005ff450.webp",
     "category": "male-health",
-    "subcategory": "Potenz und Libido",
+    "subcategory": "Prostatitis und Männergesundheit",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1039,9 +1041,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Potenz und Libido",
+      "subcategory_label": "Prostatitis und Männergesundheit",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1061,7 +1064,7 @@
     "info": "Spray to increase the penis KC language: German Form of issue: The solution for external application presented in a 50 ml bottle spray. Active ingredients: L-Argin Panax Ginseng Exposition Coffee Niacin Mentol The imperium penis, which increases erection and slows erection, is a completely original, efficient and harmless plant product. OPERATION OF EXCESSIVE TO THE Turkish Audience - SC handles Leeds in Turkish only Prohibited items in promotional material: 1. Use of names of local ministries, institutions, TV programmes, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission 2. Criticism of national medicine, pharmacy, state and all vertical authorities. 3. Sources of traffic: motivated traffic, co-registration, CashBack 4 Reference to free delivery 5 offer of return of goods if no effect It is absolutely prohibited to use local real people for a particular geo-type, including celebrities, doctors, experts and any real person, in creative works, and the use of such images without their consent can lead to serious legal consequences, since a person used in advertising can file a complaint with the public authorities, which in turn leads to proceedings, blockades and reputational losses.",
     "img": "/img/offers/imperium-spray-c64adf0b98ae.png",
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1070,10 +1073,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Sehen und Hören",
+      "family_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1093,7 +1097,7 @@
     "info": "Prostatite capsules Prior to launch, agree on the cap KC language: German Prohibited: 1. The use of the names of local ministries, institutions, TV programmes, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission, fictional versions of local doctors/scientists are also prohibited. 2. Criticism of national medicine, pharmacy, state and all vertical authorities. 3. The use of the word \"D'rman\" (translation: \"Licary\") in the language of \"Lending\", \"Relanding\", and \"Creatives\". 4. Use the order form in the form of lotterys, chests, mattresses, turnkeys, doors, etc. 5. Sources of traffic: motivated traffic, co-registration, Cashback, Tiktok 6 If content is used in advertising, this should be indicated Mandatory elements for Landsings/Plenishings: 1. A trace shall be present in the basement of the site under the obligation: (Signed) J. D. RMAN VAS (Signed): D.T.S. (Signed)* D.D.L.LD.R. (spoke in Russian): 2. Under the order button, the following text \"* Kurs daxilindind\" shall be present: Additional restrictions are imposed on products related to capacity improvement: 1. Use the adalt approach, the adlt approach is completely prohibited: 2. Demonstration or simulation of sexual acts; 3. Materials produced in the spirit of pornography (including computer graphics); 4. An approach with an increase in the sexual organ, in any form: text, visual, voice or pad. Prostalab is a pod for prostate control, a unique formula aimed at reducing inflammation, improving prostate function and eliminating prostate symptoms such as urination pain and frequent calls for urination. Composition: extract of palm fruit of dwarf tree, extract of dried fruit of horny tree, extraction of pumpkin seeds, extract from the root of the pharmacist ginger, vitamin E, zinc oxide, selenium. This product is used as additional support to alleviate the slight discomfort associated with the prostate; it can be included in the daily care of a man and is designed to alleviate symptoms; it is recommended to consult a specialist before application. Side effects: Some people may experience digestive disorders, mild allergic reactions or headaches; if adverse symptoms persist, use should be stopped and a doctor should be contacted. Counter-intelligence: Persons with increased sensitivity to components, persons under 18 years of age and persons with serious chronic diseases should consult a specialist before being used. If there are any side effects or individual incompatibilities, the reception should be discontinued and a specialist should be contacted; additional restrictions and special instructions are specified in the product instruction or may be specified by the support service. Prestalab can be used to maintain male health in the following cases: for men who are important for the functional state of the prostate in cases of discomfort during urination In cases of increased urination at night Against the background of age changes in hormonal balance where there is a need to maintain reproductive function For those who live an active life and want to protect the health of their men. Main benefits: Formula on plant basis and with high micronutrient content. It's a comfortable package of 30 capsules. Dosage mode suitable for daily use. Selected components for functional support to the male reproductive system Done in Germany Formula for the integrated induction course (2 months) The balance of ingredients is aimed at maintaining secret prostate processes, hormonal exchange and the general state of the urinary system. How to Accept Prostalab capsules receive 3 times a day, 1 pod after food, and it is recommended that the capsule be drank with a large amount of water. The recommended duration of the course is 2 months; if necessary and based on individual needs, the decision to repeat the course may be made with the agreement of a specialist. If you missed your dose, you don't want to take a double dose next time. It's enough to keep taking a standard drug. If you take any medication, suffer from a chronic disease, or have questions about your state of health before taking any supplements, it is recommended that you consult a qualified specialist.",
     "img": "/img/offers/prostalab-0fb1724fb56b.png",
     "category": "male-health",
-    "subcategory": "Potenz und Libido",
+    "subcategory": "Prostatitis und Männergesundheit",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1103,9 +1107,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Potenz und Libido",
+      "subcategory_label": "Prostatitis und Männergesundheit",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1125,7 +1130,7 @@
     "info": "Visibility capsules KC language: German Prohibited items in promotional material: 1. The use of the names of local ministries, institutions, TV programmes, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission, fictional versions of local doctors/scientists are also prohibited. 2. Criticism of national medicine, pharmacy, state and all vertical authorities. 3. The use of the word \"D'rman\" (translation: \"Licary\") in the language of \"Lending\", \"Relanding\", and \"Creatives\". 4. Use the order form in the form of lotterys, chests, mattresses, turnkeys, doors, etc. 5. Sources of traffic: motivated traffic, co-registration, Cashback, Tiktok 6 If content created by IE is used in advertising, this must be demonstrated. The use of such images without their consent can have serious legal consequences, since the person used in advertising can file a complaint with the public authorities, which in turn leads to proceedings, blockades and loss of reputation. Ocuvist is a biocomplex of a wide range of vision recovery actions. With this, you can regenerate and rejuvenate the optic cells, stop the progress of ophthalmological diseases. Only natural components are included in the capsule. It is recommended that one Ocquist capsule be taken twice a day, morning and evening after food. The capsule should be swallowed in its entirety by drinking water; regular use is required to maximize impact. People with individual sensitivity to the plant components contained in the product should avoid using it. Before being used during pregnancy and breastfeeding, consultations are required. Products containing oafs are not recommended for use in children under 12 years of age. Blueberry extraction is a source of substances that relieve fatigue and stress, increase the stability of the organ's vision, increase visual sensitivity with insufficient lighting, and contain antioxidant anthocianosis that improves retina sensitivity. Zeakcantin – a plant extract inhibits constriction, has a spasmolitic effect, removes muscle tension, normalizes eye nerve function, metabolism in the visual apparatus, and contributes to the organ's full-blown visual function by useful substances. Rodopsin plus zinc citrus, vitamins A, B2 are components of the Ocuvist composition that support the transparency of crystal, the stability of the eye-floor pressure. Activate the visual function, positively influence the colour acceptance. Protect the visual organ from viruses, bacteria, improve the quality of the tear fluid, help to purify the organ elements of the vision from toxins.",
     "img": "/img/offers/ocuvist-f02f3e49dd9a.png",
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1135,9 +1140,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Sehen und Hören",
-      "subcategory_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1157,7 +1163,7 @@
     "info": "gel to raise the capacity and increase the membership (50 ml) Gel Rhino Gold: Increases size, increases sexual endurance, improves performance. Active ingredients: Peruvian poppy, L-arginin, Damian leaves, Puam muir. The promotional material does not use images of local celebrities. Each target page should contain the following footnote: *This ad article is based on fiction, and any resemblance to real people, places or events is purely random. Prohibited: - Any reference to medical personnel, medical facilities, patients and their comments; - Images of people who may be like health workers; - Statements that undermine traditional medicine and allopathic medicines; - Guarantee the effect; - to ensure that there are no side effects. TikTok traffic is unacceptable!!!",
     "img": "/img/offers/rhino-gold-gel-6d4c60dee594.png",
     "category": "male-health",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Potenz und Libido",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1167,9 +1173,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Potenz und Libido",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1189,7 +1196,7 @@
     "info": "Leaking capsules The language of the CC is German. Prohibited items in promotional material: 1. Use of names of local ministries, institutions, TV programmes, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission 2. Criticism of national medicine, pharmacy, state and all vertical authorities. 3. Sources of traffic: motivated traffic, co-registration, CashBack 4 Reference to free delivery 5 offer of return of goods if no effect The use of such images without their consent can have serious legal consequences, since the person used in advertising can file a complaint with the public authorities, which in turn leads to proceedings, blockades and loss of reputation. Composition: Green tea extract, roadway extract, ginger extract, caffeine, red peppers",
     "img": "/img/offers/redustar-6bead8d7cd45.png",
     "category": "weight-loss",
-    "subcategory": "Weight loss",
+    "subcategory": "Appetit und Stoffwechsel",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1199,9 +1206,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Gewichtsverlust und Detox",
-      "subcategory_label": "Weight loss",
+      "subcategory_label": "Appetit und Stoffwechsel",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "weight-loss"
     },
     "target": [
       {
@@ -1221,7 +1229,7 @@
     "info": "Capsules for joint pain ArtiZynt is an innovative tool for dealing with joint pain. It contains useful substances that halt joint destruction and initiate the process of regeneration of damaged tissue. Composition: Glukosamine sulfate (2KCl) The main component of the cartilage that stimulates recovery processes. Sulphate of Hondroitine Helps keep water in joints and improves depreciation. IMS (methylsulfonylmethane) Provides the sulphur necessary for the natural production of collagen. Exposition of the boswellian pilch A grass known for its properties, which promote comfort in joints and smooth motion. curkuma root extraction It has natural antioxidant properties (standardized to 95% curkuminoids). Hyaluronic acid It removes the joints and maintains the viscosity of the sinus fluid. Vitamin C It is necessary to synthesize the collagen and support the immune system. Marganian An irresistible mineral for the health of the bones and connective tissue. Take two capsules a day, preferably during meals containing useful fats (e.g. eggs, avocados, or olive oil). Fatty ingredients such as curkumine are better absorbed in this way. Each capsule should be swallowed in its entirety with a large glass of water. Do not exceed the recommended dose unless otherwise recommended by a doctor. If you have missed the appointment, just continue the next day; do not double the dose. Keep it in a cool, dry place, away from direct sunlight. Those who take blood thinners should consult a doctor before being used, as the composition includes boswellium and curcum.",
     "img": "/img/offers/artizynt-caps-full-8f364ba788f2.webp",
     "category": "skin",
-    "subcategory": "Gesundheit der Gelenke",
+    "subcategory": "Schönheit und Haut",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1230,10 +1238,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Gesundheit der Gelenke",
+      "family_label": "Schönheit und Haut",
+      "subcategory_label": "Schönheit und Haut",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "skin"
     },
     "target": [
       {
@@ -1253,7 +1262,7 @@
     "info": "Gel versus joint pain (50 ml) Dosage flask, plastic Osteomed is a natural gel based on the oil of the cybirian and peppermint that removes pain, removes inflammation, and improves joint mobility. ♪ Fleet oil – deep into the tissue that removes the inflammation ♪ Mint oil – cools and relaxes muscles, removes spasms ♪ Magnium – Strengthens the bones and joints Made in Lithuania, by the Order of \"AVS PRODACTION\" LTD, Bulgaria, 8,000, Burgas, Apostol Karamitev St. 10, fl. 5, Office 13. Composition: Water, alcohol, glycerin, magnesium sulfate, crosscarmellosis, gelatin, butter (Sibire) abies sibirica, oil (transit mint) minta piperita Counter-intelligence: Not recommended to children, pregnant and lactating, individual incapacitability, allergy to one of the components of the formulation Application: The gel is applied twice a day to problem areas ♪ Start by strictly agreeing on the drop ♪",
     "img": "/img/offers/osteomed-eed078099754.png",
     "category": "joints",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1263,9 +1272,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Gelenke und Bewegungsapparat",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "joints"
     },
     "target": [
       {
@@ -1285,7 +1295,7 @@
     "info": "Deterioration drops (20 ml) IdealFit is a powerful fatty burning complex in droplets on a natural basis. Actively accelerates metabolism, helps to get rid of excess weight and achieve a fine figure without dieting and overworking. Maintains the energy and natural balance of the body during loss. The IdealFit formula is based on four main components, each of which has specific properties that complement each other. Green tea extraction: rich in catechine, a group of antioxidants capable of protecting cells from oxidation stress. Green tea extract is also known for its thermogenic properties, i.e. it can gently stimulate heat generation in the body and thus contribute to the combustion of calories. It also contains L-teanin, known as its ability to promote calmer and more concentrated energy. Garcia Cambodian: Tropical fruit with a skin containing hydroxylymonic acid (GLC), GLC is considered to be an inhibitor of a fat enzyme, which can also contribute to a sense of sufficiency. Guarana: It's a natural caffeine from the Amazon, which is released more slowly than in coffee. The result is a more stable energy surge without a sharp fall. Guaraná can contribute to greater physical resilience and concentration of attention. L-carnithine: amino acid involved in the transport of fatty acids in mitochondrium, where they are converted into energy. According to the manufacturer, two doses per day are recommended: 10 drops per day, preferably before basic meals; drops can be placed directly under the tongue or mixed in a small glass of water. The recommended intake period is at least three months; this gives the body time to adapt to the active ingredients and enable them to respond; IdialFit takes place in the morning before breakfast and at noon before lunch helps to develop a regime that is easy to adhere to. IdialFit is a food supplement, not a cure. It does not replace balanced, diverse diets, sufficient exercise, or full sleep. Anyone who wants to maintain his metabolism on a sustainable basis should be reminded of these basic principles. The addition may be a supplement rather than a substitute. It is prohibited to use Dr. Eckart von Hirschhusen in GEO",
     "img": "/img/offers/idealfit-f6ef60382451.png",
     "category": "weight-loss",
-    "subcategory": "Weight loss",
+    "subcategory": "Gewichtsverlust und Detox",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1294,10 +1304,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Stoffwechsel und Diabetes",
-      "subcategory_label": "Weight loss",
+      "family_label": "Gewichtsverlust und Detox",
+      "subcategory_label": "Gewichtsverlust und Detox",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "weight-loss"
     },
     "target": [
       {
@@ -1317,7 +1328,7 @@
     "info": "Hypertension capsules (hypercapacity approach) Composition: extract of cranberries, extract of fruit of ferned ripple, magnesium, L-arguinin, extract from the berryfish, extraction of hibiscus, extraction from the olives, extracting of grape bones, extract for the fruit of the cherries, cohenzim Q10 (killinon), vitamin B6 (pyridoxin), Vitamin B1 (thiamine hydrochloride), Vitamite B9 (folitic acid), magnesia starate (anti-striping agent). Recommendations for application: Take two capsules twice a day during meals by drinking a glass of water. PROHIBITED SOURCES: All types of spam (e-mail, text, etc.) Any type of motivated traffic Embezzling creatively untrustworthy information General notes on cross-cutting issues: 1. All of our pills, pods and creams are gradually in operation, and none of the means is of any effect after the first intake - and that is normal. 2. No BAD is instantaneous in the world; if it does, it will contain banned substances (e.g. Viagra counterparts in herbal potentials) and will soon be banned for sale by the local public health authority. 3. The real effect of our operas can usually be seen in a few weeks or one month or more. 4. There is no need to promise unrealistic results - few believe in them, and those who believe do not need you or us as buyers.",
     "img": "/img/offers/cardiobalance-hyperpotency-d0102c927cee.png",
     "category": "heart",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Herz und Blutdruck",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1327,9 +1338,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Herz und Blutdruck",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Herz und Blutdruck",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "heart"
     },
     "target": [
       {
@@ -1349,7 +1361,7 @@
     "info": "Gel for joint pain The innovative tool restores the cartilage tissue, increases the mobility of the joints, reduces swelling and redness, removes joint pain, and reduces the constriction of the body.",
     "img": "/img/offers/flexosamine-pro-full-216775904ca0.png",
     "category": "joints",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1359,9 +1371,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Gelenke und Bewegungsapparat",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "joints"
     },
     "target": [
       {
@@ -1381,7 +1394,7 @@
     "info": "Prostatite capsules Prior to launch, agree on the cap OPERATION OF EXCESSIVE TO THE Turkish Audience - SC handles Leeds in Turkish only Prohibited: 1. The use of the names of local ministries, institutions, TV programmes, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission, fictional versions of local doctors/scientists are also prohibited. 2. Criticism of national medicine, pharmacy, state and all vertical authorities. 3. The use of the word \"D'rman\" (translation: \"Licary\") in the language of \"Lending\", \"Relanding\", and \"Creatives\". 4. Use the order form in the form of lotterys, chests, mattresses, turnkeys, doors, etc. 5. Sources of traffic: motivated traffic, co-registration, Cashback, Tiktok 6 If content is used in advertising, this should be indicated Mandatory elements for Landsings/Plenishings: 1. A trace shall be present in the basement of the site under the obligation: (Signed) J. D. RMAN VAS (Signed): D.T.S. (Signed)* D.D.L.LD.R. (spoke in Russian): 2. Under the order button, the following text \"* Kurs daxilindind\" shall be present: Additional restrictions are imposed on products related to capacity improvement: 1. Use the adalt approach, the adlt approach is completely prohibited: 2. Demonstration or simulation of sexual acts; 3. Materials produced in the spirit of pornography (including computer graphics); 4. An approach with an increase in the sexual organ, in any form: text, visual, voice or pad. Prostalab is a pod for prostate control, a unique formula aimed at reducing inflammation, improving prostate function and eliminating prostate symptoms such as urination pain and frequent calls for urination. Composition: extract of palm fruit of dwarf tree, extract of dried fruit of horny tree, extraction of pumpkin seeds, extract from the root of the pharmacist ginger, vitamin E, zinc oxide, selenium. This product is used as additional support to alleviate the slight discomfort associated with the prostate; it can be included in the daily care of a man and is designed to alleviate symptoms; it is recommended to consult a specialist before application. Side effects: Some people may experience digestive disorders, mild allergic reactions or headaches; if adverse symptoms persist, use should be stopped and a doctor should be contacted. Counter-intelligence: Persons with increased sensitivity to components, persons under 18 years of age and persons with serious chronic diseases should consult a specialist before being used. If there are any side effects or individual incompatibilities, the reception should be discontinued and a specialist should be contacted; additional restrictions and special instructions are specified in the product instruction or may be specified by the support service. Prestalab can be used to maintain male health in the following cases: for men who are important for the functional state of the prostate in cases of discomfort during urination In cases of increased urination at night Against the background of age changes in hormonal balance where there is a need to maintain reproductive function For those who live an active life and want to protect the health of their men. Main benefits: Formula on plant basis and with high micronutrient content. It's a comfortable package of 30 capsules. Dosage mode suitable for daily use. Selected components for functional support to the male reproductive system Done in Germany Formula for the integrated induction course (2 months) The balance of ingredients is aimed at maintaining secret prostate processes, hormonal exchange and the general state of the urinary system. How to Accept Prostalab capsules receive 3 times a day, 1 pod after food, and it is recommended that the capsule be drank with a large amount of water. The recommended duration of the course is 2 months; if necessary and based on individual needs, the decision to repeat the course may be made with the agreement of a specialist. If you missed your dose, you don't want to take a double dose next time. It's enough to keep taking a standard drug. If you take any medication, suffer from a chronic disease, or have questions about your state of health before taking any supplements, it is recommended that you consult a qualified specialist.",
     "img": "/img/offers/prostalab-tr-page-3b47d71b9205.png",
     "category": "male-health",
-    "subcategory": "Potenz und Libido",
+    "subcategory": "Prostatitis und Männergesundheit",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1391,9 +1404,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Potenz und Libido",
+      "subcategory_label": "Prostatitis und Männergesundheit",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1413,7 +1427,7 @@
     "info": "Capsules for improving visual acuity Prohibited elements in advertising materials: 1. Using the names of local ministries, institutes, TV shows, medical institutions, news reports, or local celebrities, including the names and photographs of real people/doctors without their permission. Fictional versions of local doctors/scientists are also prohibited. 2. Criticism of national medicine, pharmacies, the government, and government agencies of all verticals. 3. Using the words “Dərman” (translated as “Medicine”) or “Səhiyyə” in landing pages, pre-landing pages, and creatives. 4. Using order forms in the form of lotteries, chests, nesting dolls, spinners, doors, etc. 5. Traffic sources: incentivized traffic, co-registration, CashBack, TikTok 6. If AI-generated content is used in advertising, this must be demonstrated. The use of local real people in specific geographic areas, including celebrities, doctors, experts, and any real-life individuals, is strictly prohibited in creatives. Using such images without their consent can lead to serious legal consequences, as the person used in the advertisement may file a complaint with government agencies, which in turn can lead to legal proceedings, blocking, and reputational damage. Ocuvist is a broad-spectrum vision restoration biocomplex. It can help regenerate and rejuvenate visual cells and halt the progression of ophthalmological diseases. The capsules contain only natural ingredients. It is recommended to take 1 capsule of Ocuvist twice daily, morning and evening after meals. The capsules should be swallowed whole with water. For maximum effect, regular use is required. People with individual sensitivity to the herbal ingredients contained in the product should avoid using it. Consult a doctor before use during pregnancy and breastfeeding. Products containing Ocuvist are not recommended for use in children under 12 years of age. Bilberry extract is a source of substances that relieve fatigue and stress, increasing visual endurance. It enhances visual acuity in low light. The berry contains anthocyanosides, which have antioxidant properties that improve retinal sensitivity. Zeakcantin is a plant extract that prevents vasoconstriction, has an antispasmodic effect, and relieves muscle tension. It normalizes optic nerve function and visual metabolism. It promotes adequate nutrition of the visual system. Rhodopsin plus zinc citrate, vitamins A and B2 are components of Ocuvist that maintain lens transparency and fundus pressure stability. They activate visual function and positively influence color perception. They protect the visual system from viruses and bacteria, improve the quality of tear fluid, and help cleanse the visual system of toxins.",
     "img": "/img/offers/ocuvist-tr-page-c22047d1c1d1.png",
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1423,9 +1437,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Sehen und Hören",
-      "subcategory_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1445,7 +1460,7 @@
     "info": "Hypertension Capsules (20 capsules) Arteriten is a complex based on hawthorn, lemon balm, and garlic that gently normalizes blood pressure, improves circulation, and strengthens the heart. Blood pressure control and vascular protection – a natural formula! ✅ Hawthorn – dilates blood vessels and normalizes blood pressure ✅ Melissa – reduces stress, prevents blood pressure spikes ✅ Garlic – protects the heart, lowers cholesterol ✅ Vitamins B6 and B1 – support the nervous and cardiovascular systems 1 capsule contains: (Ingredient Name Weight, mg): Melissa officinalis extract 4:1 50.00 Hawthorn leaf and flower extract (Crataegus monogyna) 4:1 70.00 Garlic extract (Allium sativum), 1% allicin 50.00 Vitamin B6 (pyridoxine hydrochloride) 0.70 Vitamin B1 (thiamine hydrochloride) 0.55 Excipients: Microcrystalline cellulose, gelatin, magnesium salts of fatty acids. Contraindications: Not recommended during pregnancy and breastfeeding. Do not exceed the recommended daily dose! Do not use this dietary supplement as a substitute for a healthy and balanced diet! Directions: Take one capsule twice daily after meals, morning and evening. 80% of users report stabilization of blood pressure within the first week! ⚠️ Launch strictly by prior approval!",
     "img": "/img/offers/arteriten-low-price-90ca80ea0787.png",
     "category": "heart",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Herz und Blutdruck",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1455,9 +1470,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Herz und Blutdruck",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Herz und Blutdruck",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "heart"
     },
     "target": [
       {
@@ -1477,7 +1493,7 @@
     "info": "Prostatitis Capsules (20 pcs) Daily Support for Men's Health and Comfort ProstaOne is a capsule complex for prostate health and normal urination. Its formula, based on plant extracts and trace elements, helps reduce discomfort, reduce the frequency of nocturnal urination, and support the natural functions of the prostate. ✅ Saw palmetto extract helps reduce swelling and maintains normal prostate size. ✅ Pumpkin seeds support urinary function. ✅ Zinc is important for hormonal balance and men's health. ✅ Natural antioxidants help reduce inflammatory discomfort. Most men report improved well-being and a reduction in unpleasant symptoms within the first few weeks of regular use. Ingredients: microcrystalline cellulose, gelatin. Pumpkin (Cucurbita maxima) extract, Tribulus terrestris (Tribulus terrestris) extract, Nettle (Urtica dioica) extract, Vitamin C (L-ascorbic acid), Ginseng (Panax ginseng) extract, Anti-caking agent: magnesium salts of fatty acids. Contraindications: Not recommended during pregnancy and breastfeeding. Do not exceed the recommended daily dose! Do not use this dietary supplement as a substitute for a healthy and balanced diet! Directions: Take one capsule twice daily after meals, morning and evening. ⚠️ Launching strictly by appointment!",
     "img": "/img/offers/prostaone-low-price-ea7bc5c432ab.png",
     "category": "male-health",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Prostatitis und Männergesundheit",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1487,9 +1503,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Prostatitis und Männergesundheit",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1509,7 +1526,7 @@
     "info": "Capsules for hypertension Cardiotens is a modern drug based on natural plant components to control hypertension and increased pressure. Cardiotens capsules have a complex effect on the cardiovascular system and the general body of the patient. Composition: Melissa extract Contains flavonoids, are tolerated and phenol compounds that have an antioxidant and vascular expansion effect. Melissa has an anxiological effect by influencing the receptors of the GAMC. garlic extract The mechanism: Garlic contains allicin , which expands the vessels by stimulating the production of nitrogen oxide (NO), an important relaxing factor for the vascular wall. It reduces peripheral vascinal resistance. Studies show that regular garlic intake can reduce the systolic AD by 5 to 10 mm, and diastolic by 3 to 6 mm, especially in moderate patients. Hypertonia. Vitamin B6, B1 Vitamin B1 (thiamine) is involved in the transmission of nerve impulses and the regulation of the tone of the vessel. It contributes to the normalization of the vegetative nervous system, especially under stress. It improves the metabolism of myocardial cells and vascular wall. It can reduce the level of homocystein (cardiovascular disease risk marker). Vitamin B6 (pyridoxin) is involved in synthesis of neurotransmitters (serotonin, GAMC, dopamine) that influence stress and vascular tonus. It reduces the level of homocystein, which is associated with an increased risk of cardiovascular disease. It controls the body's fluid balance by influencing sodium-calium exchange. It can contribute to lowering aldosterone, a hormone that increases pressure. Berryberry extract Reduction of arterial pressure: Contains flavonoids and oligomer proantocyanides that expand the vessels by stimulating the production of nitrogen oxide (NO). It reduces peripheral vascular resistance. It is used in moderate essential hypertension, especially when the pressure is high due to stress or nervousness. It increases coronary blood flow. It increases myocardial reduction without increasing the need for oxygen in the heart. It's useful for heart failure at stage I-II.",
     "img": "/img/offers/cardiotens-plus-full-0b1d5925f31a.png",
     "category": "metabolism",
-    "subcategory": "Hyperpotency",
+    "subcategory": "Stoffwechsel und Diabetes",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1519,9 +1536,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Stoffwechsel und Diabetes",
-      "subcategory_label": "Hyperpotency",
+      "subcategory_label": "Stoffwechsel und Diabetes",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "metabolism"
     },
     "target": [
       {
@@ -1541,7 +1559,7 @@
     "info": "Joint Cream Offer EXCLUSIVELY targeted at a Turkish audience - the contact center processes leads in Turkish ONLY. Prohibited elements in advertising materials: 1. Use of names of local ministries, institutes, TV shows, medical institutions, news, local celebrities, including names and photographs of real people/doctors without their permission. 2. Criticism of national medicine, pharmacies, the government, and government agencies of all verticals. 3. Traffic sources: incentivized traffic, co-registration, CashBack. 4. Mention of free shipping. 5. Offer to return the product if there is no effect. It is strictly forbidden to use local real people in creatives for a specific geographic area, including celebrities, doctors, experts, and any real people. Using such images without their consent can lead to serious legal consequences, as the person used in the advertisement may file a complaint with government agencies, which in turn leads to legal proceedings, blocking, and reputational damage. Ingredients: Camphor, marsh cinquefoil extract, menthol, glucosamine, chondroitin, arnica montana flower extract, pine bud extract, calendula officinalis flower extract, vitamin E, cinnamon oil, sage seed oil, ginger oil Apply a small amount of gel to the joint area. Spread it over the problem area using gentle massage movements. Apply daily.",
     "img": "/img/offers/chondrostart-tr-page-low-price-438a26170177.png",
     "category": "vision-hearing",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1550,10 +1568,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "family_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1573,7 +1592,7 @@
     "info": "Optiheart - Hypertension Capsules (20 Capsules per Package) Blood pressure control and vascular protection – a natural formula! Optiheart is a complex based on hawthorn, lemon balm, and garlic that gently normalizes blood pressure, improves circulation, and strengthens the heart. ✅ Hawthorn – dilates blood vessels and normalizes blood pressure ✅ Lemon balm – reduces stress, prevents blood pressure spikes ✅ Garlic – protects the heart, lowers cholesterol ✅ Vitamins B6 and B1 – support the nervous and cardiovascular systems ! Coordination of the mouthguard and launch with the advertisement! Made in Lithuania, by order of \"AVS PRODACTION\" LTD, Bulgaria, 8000, Burgas, Apostol Karamitev st. 10, fl. 5, Office 13. Melissa officinalis extract 4:1 50.00 Hawthorn leaf and flower extract (Crataegus monogyna) 4:1 70.00 Garlic extract (Allium sativum), 1% allicin 50.00 Vitamin B6 (pyridoxine hydrochloride) 0.70 Vitamin B1 (thiamine hydrochloride) 0.55 Excipients: Microcrystalline cellulose, gelatin, magnesium salts of fatty acids. Not recommended for children, pregnant or breastfeeding women. Individual intolerance, allergy to any of the ingredients. Directions: Take one tablet twice daily after meals.",
     "img": "/img/offers/optiheart-00f3f3563137.jpg",
     "category": "vision-hearing",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1582,10 +1601,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Herz und Blutdruck",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "family_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1605,7 +1625,7 @@
     "info": "Diabetes capsules Glucosol helps minimise the negative effects of diabetes and allows you to live a full life! It regulates sugar levels and helps improve your well-being. IMPORTANT! When working with Germany, it is PROHIBITED to use masks on the landing page. Before the order form, you can specify examples of valid numbers: Germany 493XXXXXXXX, 491XXXXXXXX, 496XXXXXXXX",
     "img": "/img/offers/glucosol-low-price-b3a22a22f8e0.png",
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1615,9 +1635,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Stoffwechsel und Diabetes",
-      "subcategory_label": "Diabetes und Stoffwechsel",
+      "subcategory_label": "Stoffwechsel und Diabetes",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "metabolism"
     },
     "target": [
       {
@@ -1637,7 +1658,7 @@
     "info": "Cystitis Capsules For adults only. It is recommended to take 2 capsules before lunch and 1 capsule before dinner with a glass of water. Capsule Ingredients (in Italian):D-mannosio (da mais, frutto), Corbezzolo ES 4:1 ((5% arbutina) Arbutus unedo L., foglie ), Mirtillo rosso (Vaccinium oxycoccos L.) estratto secco di bacche 4:1 - 3, 60% complesso di bioflavonoidi (Citrus aurantium L., frutto). Capsule - HPMC, Antiagglomerante: magnesio stearato",
     "img": "/img/offers/cystobact-8fb88554dcb3.png",
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1647,9 +1668,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Sehen und Hören",
-      "subcategory_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1669,7 +1691,7 @@
     "info": "Gel for joint pain Flexosamine - permanently cures and restores your joints! This innovative product restores cartilage tissue, increases joint mobility, reduces swelling and redness, eliminates joint pain, and reduces body stiffness. Important! When working with Germany, it is FORBIDDEN to use number masks on the landing page. Before the order form, you can specify examples of valid numbers: 493XXXXXXXXXX, 491XXXXXXXXXX, 496XXXXXXXXXXXX",
     "img": "/img/offers/flexosamine-low-price-8bc9d8ee5791.png",
     "category": "joints",
-    "subcategory": "Anti-Aging-Pflege",
+    "subcategory": "Gelenke und Bewegungsapparat",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1679,9 +1701,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Gelenke und Bewegungsapparat",
-      "subcategory_label": "Anti-Aging-Pflege",
+      "subcategory_label": "Gelenke und Bewegungsapparat",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "joints"
     },
     "target": [
       {
@@ -1701,7 +1724,7 @@
     "info": "Capsules for diabetes DiaformRX allows immune cells to produce the hormone insulin in the right amount, and also helps the pancreas to perceive it. Due to this, it restores metabolic processes, and diabetics get rid of the disease. IMPORTANT! When working with Germany and Austria, it is FORBIDDEN to use number masks on the landing page. Before the order form, you can specify examples of valid numbers: Germany 493XXXXXXXXXX, 491XXXXXXXXXX, 496XXXXXXXXXXXX Austria 436XXXXXXXXXX, 436XXXXXXXXXX",
     "img": "/img/offers/diaformrx-3e00a917e29f.png",
     "category": "metabolism",
-    "subcategory": "Diabetes und Stoffwechsel",
+    "subcategory": "Stoffwechsel und Diabetes",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1711,9 +1734,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Stoffwechsel und Diabetes",
-      "subcategory_label": "Diabetes und Stoffwechsel",
+      "subcategory_label": "Stoffwechsel und Diabetes",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "metabolism"
     },
     "target": [
       {
@@ -1733,7 +1757,7 @@
     "info": "Contains cranberry fruit extract, aronia fruit extract, magnesium, L-arginine, hawthorn leaf and flower extract, hibiscus flower powder, olive leaf extract, grape seed extract, grape seed extract, coenzyme Q10, vitamin B6, folic acid. The action of Cardiomax is aimed at improving cardiac function, normalizing blood pressure and removing possible risk factors for complications. Cardiomax helps to strengthen blood vessels, improve blood flow to the heart and increase cardiac output. It may be useful in case of meteorological sensitivity and tendency to pressure fluctuations. General notes on the offers: No dietary supplement in the world has an instant effect. If it does, it contains banned substances and will soon be banned from sale by the local health authority. The real effect of offers can usually be seen after a few weeks or 1 month or more. There is no need to promise unrealistic results - few people believe in them. And those who do believe are not needed as customers",
     "img": "/img/offers/cardiomax-a0d7d4787604.png",
     "category": "heart",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Herz und Blutdruck",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1743,9 +1767,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Herz und Blutdruck",
-      "subcategory_label": "Sehen und Hören",
+      "subcategory_label": "Herz und Blutdruck",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "heart"
     },
     "target": [
       {
@@ -1765,7 +1790,7 @@
     "info": "Fungokiller - fungus spray Made in Italy Transfer of the lead's IP address is required. We accept traffic to Austria The landing page requires the following inscription: “Check delivery costs with operators” Active Ingredients: -&nbsp;Propolis extract -&nbsp;Thyme extract -&nbsp;Citric acid",
     "img": "/img/offers/fungokiller-caca7bdc53c9.png",
     "category": "immune",
-    "subcategory": "Fungus",
+    "subcategory": "Immunität und allgemeine Gesundheit",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1775,9 +1800,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Immunität und allgemeine Gesundheit",
-      "subcategory_label": "Fungus",
+      "subcategory_label": "Immunität und allgemeine Gesundheit",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "immune"
     },
     "target": [
       {
@@ -1797,7 +1823,7 @@
     "info": "Alpha Beast(капсулы) - это отличное средство для того, чтобы снова начать жить активной половой жизнью. Повышает либидо, восстанавливает и улучшает потенцию на долгий срок, улучшает кровоснабжение пещеристых тел. Повышает возбудимость, возвращает вкус к сексу, тонизирует организм и придает выносливость.",
     "img": "/img/offers/alpha-beast-low-price-4110900ef8c6.png",
     "category": "male-health",
-    "subcategory": "Potency",
+    "subcategory": "Potenz und Libido",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1807,9 +1833,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Männliche Gesundheit",
-      "subcategory_label": "Potency",
+      "subcategory_label": "Potenz und Libido",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "male-health"
     },
     "target": [
       {
@@ -1829,7 +1856,7 @@
     "info": "Capsules for diabetics. Contains shiitake mushroom extract, green tea extract, berberine, vitamins C, B6, B9 and B12, trace elements zinc and chromium. Normalizes blood glucose levels, reduces the likelihood of complications, including loss of vision and the formation of ulcers, prevents metabolic syndrome, gives energy, and returns joy to life.",
     "img": "/img/offers/insulinorm-fddc88f4f34e.png",
     "category": "vision-hearing",
-    "subcategory": "Diabetes",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1839,9 +1866,10 @@
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
       "family_label": "Sehen und Hören",
-      "subcategory_label": "Diabetes",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {
@@ -1861,7 +1889,7 @@
     "info": "Cardiac Support Capsules. Contains extracts of cranberry berries, chokeberry, hawthorn, olive leaves, grape seeds and black currant berries, hibiscus flower powder, magnesium sulfate, L-arginine, coenzyme Q10, vitamins B6 and B9. Action Dr. Cardio is aimed at normalizing blood pressure and combating hypertension. The product supports optimal myocardial contractility for good blood circulation. Helps normalize heart contractions and improve overall heart health.",
     "img": "/img/offers/dr-cardio-97b3f23d5d76.png",
     "category": "vision-hearing",
-    "subcategory": "Sehen und Hören",
+    "subcategory": "Hören und Gleichgewicht",
     "top": 0,
     "main_offer": 0,
     "new": 0,
@@ -1870,10 +1898,11 @@
     "epc": 0,
     "ai_classification": {
       "reason": "Remote AI classification disabled in local mode",
-      "family_label": "Herz und Blutdruck",
-      "subcategory_label": "Sehen und Hören",
+      "family_label": "Sehen und Hören",
+      "subcategory_label": "Hören und Gleichgewicht",
       "created_new_category": false,
-      "created_new_category_name": null
+      "created_new_category_name": null,
+      "family_slug": "vision-hearing"
     },
     "target": [
       {

@@ -1,3 +1,5 @@
+import Router from 'next/router'
+
 const CART_KEY = 'lebenskraft_cart'
 
 export function readCart() {
@@ -52,7 +54,7 @@ export function addToCartAndGo(product, event) {
     if (event && typeof event.stopPropagation === 'function') {
       event.stopPropagation()
     }
-    window.location.assign('/cart')
+    Router.push('/cart')
   }
 
   return items

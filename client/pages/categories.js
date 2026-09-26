@@ -1,13 +1,13 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import Head from 'next/head'
 import Header from '../components/Header'
 import Link from 'next/link'
-import products from '../data/specific_products.json'
 import { buildCatalogGroups } from '../lib/catalog'
 import { resolveProductImage } from '../lib/product'
-import { buildCollectionPageSchemaFromProducts } from '../lib/schema'
+import { buildCollectionPageSchemaFromProducts, buildFaqSchema, buildWebPageSchema } from '../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-const categories = buildCatalogGroups(products)
 
 function buildCatalogSeoBlock() {
   return (
@@ -71,15 +71,46 @@ function buildCatalogSeoBlock() {
   )
 }
 
-export default function Categories() {
+export default function Categories({ products = [] }) {
+  const categories = buildCatalogGroups(products)
   const canonicalUrl = `${CANONICAL_BASE}/categories`
+  const title = 'Produktkatalog — LebensKraft'
+  const description = 'Produktkatalog von LebensKraft. Auswahl an Kategorien und Produkten für Gesundheit, Schönheit und Alltagswohlbefinden.'
+  const pageSchema = buildWebPageSchema({
+    name: title,
+    description,
+    url: canonicalUrl,
+  })
+  const faqSchema = buildFaqSchema([
+    {
+      question: 'Wie finde ich die passende Kategorie?',
+      answer: 'Nutzen Sie die Kategorien und Unterkategorien im Katalog, um Produkte nach Ihrem Thema schneller zu finden.',
+    },
+    {
+      question: 'Werden in jeder Kategorie passende Produkte angezeigt?',
+      answer: 'Ja, jede Kategorie zeigt thematisch passende Produkte mit klarer Zuordnung und direkter Produktseite.',
+    },
+  ])
 
   return (
     <>
       <Head>
-        <title>Produktkatalog — LebensKraft</title>
-        <meta name="description" content="Produktkatalog von LebensKraft. Auswahl an Kategorien und Produkten für Gesundheit, Schönheit und Alltagswohlbefinden." />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={`${CANONICAL_BASE}/img/placeholder.svg`} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -103,6 +134,10 @@ export default function Categories() {
               }),
             ),
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       </Head>
 
@@ -174,4 +209,23 @@ export default function Categories() {
     </div>
     </>
   )
+}
+
+export async function getServerSideProps() {
+  const file = path.join(process.cwd(), 'data', 'specific_products.json')
+  let products = []
+
+  try {
+    const raw = fs.readFileSync(file, 'utf8')
+    const parsed = JSON.parse(raw || '[]')
+    products = Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    products = []
+  }
+
+  return {
+    props: {
+      products,
+    },
+  }
 }

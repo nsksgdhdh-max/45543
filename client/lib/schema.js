@@ -1,6 +1,54 @@
 const SITE_NAME = 'Ewige Vitalität'
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://ewige-vitalitaet.de').replace(/\/$/, '')
 const SITE_DESCRIPTION = 'Gesundheitsprodukte und Wellness-Lösungen für Alltag, Vitalität und Wohlbefinden.'
+const BUSINESS_ADDRESS = {
+  '@type': 'PostalAddress',
+  streetAddress: 'Musterstraße 42',
+  postalCode: '10115',
+  addressCountry: 'DE',
+  addressLocality: 'Berlin',
+}
+
+function buildOfferShippingDetails() {
+  return {
+    '@type': 'OfferShippingDetails',
+    shippingRate: {
+      '@type': 'MonetaryAmount',
+      value: '0',
+      currency: 'EUR',
+    },
+    shippingDestination: {
+      '@type': 'DefinedRegion',
+      addressCountry: 'DE',
+    },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 0,
+        maxValue: 1,
+        unitCode: 'DAY',
+      },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 3,
+        maxValue: 7,
+        unitCode: 'DAY',
+      },
+    },
+  }
+}
+
+function buildMerchantReturnPolicy() {
+  return {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'DE',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+    merchantReturnDays: 14,
+    returnMethod: 'https://schema.org/ReturnByMail',
+    returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+  }
+}
 
 function normalizePriceValue(value) {
   if (typeof value === 'number' && Number.isFinite(value)) return value
@@ -39,11 +87,40 @@ export function buildWebsiteSchema() {
       '@type': 'Organization',
       name: SITE_NAME,
       url: SITE_URL,
-      address: {
-        '@type': 'PostalAddress',
-        addressCountry: 'DE',
-        addressLocality: 'Berlin',
-      },
+      address: BUSINESS_ADDRESS,
+    },
+  }
+}
+
+export function buildOrganizationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo-mark.svg`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      availableLanguage: ['de'],
+      areaServed: 'DE',
+    },
+    address: BUSINESS_ADDRESS,
+  }
+}
+
+export function buildWebPageSchema({ name, description, url }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url,
+    inLanguage: 'de-DE',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: SITE_URL,
     },
   }
 }
@@ -85,10 +162,13 @@ export function buildProductSchema(product, url) {
       price,
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
+      shippingDetails: buildOfferShippingDetails(),
+      hasMerchantReturnPolicy: buildMerchantReturnPolicy(),
       seller: {
         '@type': 'Organization',
         name: SITE_NAME,
         url: SITE_URL,
+        address: BUSINESS_ADDRESS,
       },
     },
   }
@@ -122,6 +202,14 @@ export function buildCollectionPageSchema({ name, description, url, items = [], 
             priceCurrency: 'EUR',
             price: Number(item.price || 0),
             availability: 'https://schema.org/InStock',
+            shippingDetails: buildOfferShippingDetails(),
+            hasMerchantReturnPolicy: buildMerchantReturnPolicy(),
+            seller: {
+              '@type': 'Organization',
+              name: SITE_NAME,
+              url: SITE_URL,
+              address: BUSINESS_ADDRESS,
+            },
           },
         },
       })),
@@ -142,4 +230,26 @@ export function buildCollectionPageSchemaFromProducts({ name, description, url, 
     })),
     breadcrumbs,
   })
+}
+
+export function buildFaqSchema(items = []) {
+  const accepted = items
+    .map((item) => ({
+      question: String(item?.question || '').trim(),
+      answer: String(item?.answer || '').trim(),
+    }))
+    .filter((item) => item.question && item.answer)
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: accepted.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
 }

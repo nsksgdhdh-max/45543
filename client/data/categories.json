@@ -1,0 +1,97 @@
+[
+  {
+    "slug": "male-health",
+    "label": "Männliche Gesundheit",
+    "subcategories": [
+      "Prostatitis und Männergesundheit",
+      "Potenz und Libido"
+    ]
+  },
+  {
+    "slug": "vision-hearing",
+    "label": "Sehen und Hören",
+    "subcategories": [
+      "Hören und Gleichgewicht"
+    ]
+  },
+  {
+    "slug": "metabolism",
+    "label": "Stoffwechsel und Diabetes",
+    "subcategories": [
+      "Stoffwechsel und Diabetes",
+      "Gewichtsmanagement"
+    ]
+  },
+  {
+    "slug": "heart",
+    "label": "Herz und Blutdruck",
+    "subcategories": [
+      "Herz und Blutdruck",
+      "Kreislauf und Energie"
+    ]
+  },
+  {
+    "slug": "digestive",
+    "label": "Verdauung und Magen-Darm",
+    "subcategories": [
+      "Verdauung und Magen-Darm",
+      "Darmsanierung"
+    ]
+  },
+  {
+    "slug": "joints",
+    "label": "Gelenke und Bewegungsapparat",
+    "subcategories": [
+      "Gelenke und Bewegungsapparat",
+      "Muskel und Rücken"
+    ]
+  },
+  {
+    "slug": "weight-loss",
+    "label": "Gewichtsverlust und Detox",
+    "subcategories": [
+      "Gewichtsverlust und Detox",
+      "Appetit und Stoffwechsel"
+    ]
+  },
+  {
+    "slug": "nerves",
+    "label": "Nervensystem",
+    "subcategories": [
+      "Nervensystem",
+      "Stress und Schlaf"
+    ]
+  },
+  {
+    "slug": "urinary",
+    "label": "Urogenitalsystem",
+    "subcategories": [
+      "Urogenitalsystem",
+      "Prostata und Harnwege"
+    ]
+  },
+  {
+    "slug": "venous-health",
+    "label": "Venöse Gesundheit",
+    "subcategories": [
+      "Venöse Gesundheit",
+      "Pflege für die Füße"
+    ]
+  },
+  {
+    "slug": "skin",
+    "label": "Schönheit und Haut",
+    "subcategories": [
+      "Anti-Aging-Pflege",
+      "Schönheit und Haut"
+    ]
+  },
+  {
+    "slug": "immune",
+    "label": "Immunität und allgemeine Gesundheit",
+    "subcategories": [
+      "Immunität und allgemeine Gesundheit",
+      "Detox und allgemeine Vitalität"
+    ]
+  }
+]

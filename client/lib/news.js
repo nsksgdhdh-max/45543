@@ -19,10 +19,11 @@ export function normalizeNewsItem(item) {
   const title = String(listItem.title || '').trim()
   const created = listItem.createdAt || new Date().toISOString()
   const slug = String(listItem.slug || buildNewsSlug({ title, id: listItem.id, createdAt: created }))
+  const stableId = String(listItem.id || `news-${buildNewsSlug({ title, id: listItem.id, createdAt: created }) || created}`)
 
   return {
     ...listItem,
-    id: listItem.id || `news-${Date.now()}`,
+    id: stableId,
     slug,
     title,
     excerpt: String(listItem.excerpt || '').trim(),
@@ -66,7 +67,11 @@ export function saveNews(entry) {
 }
 
 export function deleteNewsById(id) {
-  const list = readNews().filter((item) => String(item.id || item.slug || item.createdAt) !== String(id))
+  const target = String(id || '').trim().toLowerCase()
+  const list = readNews().filter((item) => {
+    const candidates = [item.id, item.slug, item.createdAt, item.title]
+    return !candidates.some((value) => String(value || '').trim().toLowerCase() === target)
+  })
 
   fs.mkdirSync(path.dirname(newsPath), { recursive: true })
   fs.writeFileSync(newsPath, `${JSON.stringify(list, null, 2)}\n`)

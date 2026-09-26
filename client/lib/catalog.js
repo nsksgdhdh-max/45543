@@ -25,6 +25,58 @@ const FAMILY_RULES = [
 
 const FAMILY_ORDER = FAMILY_RULES.map((rule) => rule.slug)
 
+const CATEGORY_SUBCATEGORIES = {
+  'male-health': ['Prostatitis und Männergesundheit', 'Potenz und Libido'],
+  'vision-hearing': ['Hören und Gleichgewicht'],
+  metabolism: ['Stoffwechsel und Diabetes', 'Gewichtsmanagement'],
+  heart: ['Herz und Blutdruck', 'Kreislauf und Energie'],
+  digestive: ['Verdauung und Magen-Darm', 'Darmsanierung'],
+  joints: ['Gelenke und Bewegungsapparat', 'Muskel und Rücken'],
+  'weight-loss': ['Gewichtsverlust und Detox', 'Appetit und Stoffwechsel'],
+  nerves: ['Nervensystem', 'Stress und Schlaf'],
+  urinary: ['Urogenitalsystem', 'Prostata und Harnwege'],
+  'venous-health': ['Venöse Gesundheit', 'Pflege für die Füße'],
+  skin: ['Anti-Aging-Pflege', 'Schönheit und Haut'],
+  immune: ['Immunität und allgemeine Gesundheit', 'Detox und allgemeine Vitalität'],
+}
+
+const CATEGORY_SUBCATEGORY_ALIASES = {
+  'potency': 'Potenz und Libido',
+  'potency and libido': 'Potenz und Libido',
+  'male health': 'Prostatitis und Männergesundheit',
+  'male health and potency': 'Potenz und Libido',
+  'prostatitis': 'Prostatitis und Männergesundheit',
+  'prostate': 'Prostatitis und Männergesundheit',
+  'general health': 'Immunität und allgemeine Gesundheit',
+  'general health and detox': 'Detox und allgemeine Vitalität',
+  'allgemeine gesundheit': 'Immunität und allgemeine Gesundheit',
+  'detox': 'Detox und allgemeine Vitalität',
+  'anti aging': 'Anti-Aging-Pflege',
+  'anti-age': 'Anti-Aging-Pflege',
+  'antiage': 'Anti-Aging-Pflege',
+  'beauty and skin': 'Schönheit und Haut',
+  'skin care': 'Schönheit und Haut',
+  'skin': 'Schönheit und Haut',
+  'venous health': 'Venöse Gesundheit',
+  'varicose': 'Venöse Gesundheit',
+  'varicose veins': 'Venöse Gesundheit',
+  'gelenke': 'Gelenke und Bewegungsapparat',
+  'joint health': 'Gelenke und Bewegungsapparat',
+  'muscle and back': 'Muskel und Rücken',
+  'weight loss': 'Gewichtsverlust und Detox',
+  'slimming': 'Gewichtsverlust und Detox',
+  'blood pressure': 'Herz und Blutdruck',
+  'circulation': 'Kreislauf und Energie',
+  'stress and sleep': 'Stress und Schlaf',
+  'sleep': 'Stress und Schlaf',
+  'vision': 'Hören und Gleichgewicht',
+  'hearing': 'Hören und Gleichgewicht',
+  'digestive': 'Verdauung und Magen-Darm',
+  'gut health': 'Darmsanierung',
+  'urinary': 'Urogenitalsystem',
+  'prostata': 'Prostata und Harnwege',
+}
+
 const SUBCATEGORY_ALIASES = {
   'увеличение': 'Potenz und Libido',
   'увеличение и эрекция': 'Potenz und Libido',
@@ -65,6 +117,86 @@ function normalizeSubcategoryCandidate(value = '') {
     .trim()
 
   return SUBCATEGORY_ALIASES[normalizedKey] || raw
+}
+
+function getCategorySubcategories(categorySlug = '') {
+  return CATEGORY_SUBCATEGORIES[String(categorySlug || '').trim()] || []
+}
+
+export function getCanonicalSubcategories(categorySlug = '') {
+  return getCategorySubcategories(categorySlug)
+}
+
+function pickCanonicalSubcategory(categorySlug, candidate, product) {
+  const options = getCategorySubcategories(categorySlug)
+  const normalizedCandidate = normalizeSubcategoryCandidate(candidate)
+  const normalizedCandidateKey = normalizeText(normalizedCandidate)
+  const aliasMatch = CATEGORY_SUBCATEGORY_ALIASES[normalizedCandidateKey] || CATEGORY_SUBCATEGORY_ALIASES[toEnglishSlug(normalizedCandidateKey).replace(/-/g, ' ')]
+
+  if (options.includes(normalizedCandidate)) return normalizedCandidate
+  if (aliasMatch && options.includes(aliasMatch)) return aliasMatch
+
+  const text = normalizeText(getSubcategoryText(product))
+  if (categorySlug === 'male-health') {
+    return /(prostat|prostate|male health|андролог|мужск)/i.test(text)
+      ? 'Prostatitis und Männergesundheit'
+      : 'Potenz und Libido'
+  }
+  if (categorySlug === 'vision-hearing') {
+    return 'Hören und Gleichgewicht'
+  }
+  if (categorySlug === 'metabolism') {
+    return /(diabet|glukoz|sugar|insulin|metab)/i.test(text)
+      ? 'Stoffwechsel und Diabetes'
+      : 'Gewichtsmanagement'
+  }
+  if (categorySlug === 'heart') {
+    return /(blood pressure|pressure|hypert|heart|cardio|circulation|давлен|сердц)/i.test(text)
+      ? 'Herz und Blutdruck'
+      : 'Kreislauf und Energie'
+  }
+  if (categorySlug === 'digestive') {
+    return /(digest|gut|stomach|gast|желуд|киш|пищевар)/i.test(text)
+      ? 'Verdauung und Magen-Darm'
+      : 'Darmsanierung'
+  }
+  if (categorySlug === 'joints') {
+    return /(joint|arthritis|bone|back|spine|muscle|сустав|мышц|спин|артро|хондро)/i.test(text)
+      ? 'Gelenke und Bewegungsapparat'
+      : 'Muskel und Rücken'
+  }
+  if (categorySlug === 'weight-loss') {
+    return /(weight loss|slimming|fat|burn|похуд|снижение веса|жир|стройн)/i.test(text)
+      ? 'Gewichtsverlust und Detox'
+      : 'Appetit und Stoffwechsel'
+  }
+  if (categorySlug === 'nerves') {
+    return /(stress|sleep|anxiety|insomnia|сон|стресс|тревож|псих)/i.test(text)
+      ? 'Stress und Schlaf'
+      : 'Nervensystem'
+  }
+  if (categorySlug === 'urinary') {
+    return /(prostate|urinary|bladder|kidney|моче|почек|уролог|цистит)/i.test(text)
+      ? 'Prostata und Harnwege'
+      : 'Urogenitalsystem'
+  }
+  if (categorySlug === 'venous-health') {
+    return /(varicose|vein|venous|krampfadern|вены|веноз)/i.test(text)
+      ? 'Venöse Gesundheit'
+      : 'Pflege für die Füße'
+  }
+  if (categorySlug === 'skin') {
+    return /(anti[- ]?age|beauty|skin|cosmetic|skincare|kожа|дерма|крем)/i.test(text)
+      ? 'Anti-Aging-Pflege'
+      : 'Schönheit und Haut'
+  }
+  if (categorySlug === 'immune') {
+    return /(detox|parasite|immune|vitamin|general health|общего|здоровье|антиокс|паразит)/i.test(text)
+      ? 'Immunität und allgemeine Gesundheit'
+      : 'Detox und allgemeine Vitalität'
+  }
+
+  return options[0] || normalizedCandidate || 'Allgemeine Gesundheit'
 }
 
 function normalizeText(value) {
@@ -163,6 +295,15 @@ function getProductText(product) {
   ].join(' ')
 }
 
+function getSubcategoryText(product) {
+  return [
+    product?.name,
+    product?.subcategory,
+    product?.info,
+    product?.ai_classification?.subcategory_label,
+  ].join(' ')
+}
+
 function getExplicitFamilyOverride(product) {
   const text = normalizeText(getProductText(product))
 
@@ -214,12 +355,6 @@ export function inferFormCategory(product) {
 }
 
 export function inferFamilyCategory(product) {
-  const override = getExplicitFamilyOverride(product)
-  if (override) {
-    const match = FAMILY_RULES.find((rule) => rule.slug === override)
-    return match || { slug: override, label: override === 'skin' ? 'Schönheit und Haut' : override === 'vision-hearing' ? 'Sehen und Hören' : override === 'male-health' ? 'Männliche Gesundheit' : override === 'weight-loss' ? 'Gewichtsverlust und Detox' : override === 'venous-health' ? 'Venöse Gesundheit' : override === 'nerves' ? 'Nervensystem' : 'Immunität und allgemeine Gesundheit' }
-  }
-
   const directCategory = product?.category || product?.ai_classification?.family_label || ''
   const explicitFamily = productFamilyFromCategoryString(directCategory)
   if (explicitFamily) {
@@ -247,47 +382,47 @@ export function inferFamilyCategory(product) {
     }
   }
 
+  const override = getExplicitFamilyOverride(product)
+  if (override) {
+    const match = FAMILY_RULES.find((rule) => rule.slug === override)
+    return match || { slug: override, label: override === 'skin' ? 'Schönheit und Haut' : override === 'vision-hearing' ? 'Sehen und Hören' : override === 'male-health' ? 'Männliche Gesundheit' : override === 'weight-loss' ? 'Gewichtsverlust und Detox' : override === 'venous-health' ? 'Venöse Gesundheit' : override === 'nerves' ? 'Nervensystem' : 'Immunität und allgemeine Gesundheit' }
+  }
+
   const text = normalizeText(getProductText(product))
   const match = FAMILY_RULES.find((rule) => rule.keywords.some((keyword) => text.includes(keyword)))
   return match || { slug: 'immune', label: 'Immunität und allgemeine Gesundheit' }
 }
 
 export function inferSubcategoryLabel(product) {
-  const text = normalizeText(getProductText(product))
+  const text = normalizeText(getSubcategoryText(product))
+  const categorySlug = inferFamilyCategory(product)?.slug || String(product?.category || '').trim()
 
-  if (/(варикоз|varicose|веноз|вены|venous|vein|veins|антиварикоз|anti[- ]?varicose|krampfadern|уход.*ног|ноги)/i.test(text)) return 'Pflege für die Füße'
-  if (/омолаживающ|rejuvenation|anti[- ]?age|antiage|морщин|collagen|hyaluronic|peptides|крем.*кож|кожа.*крем|anti[- ]?age cream|skin ageing/i.test(text)) return 'Anti-Aging-Pflege'
-  if (/зрение|глаз|слух|офтальм|vision|eye|retina|audi|optic|опти/i.test(text)) return 'Sehen und Augen'
-  if (/простат|потенц|эрект|тестостерон|libido|male health|men health|androlog|увеличение.*члена|увеличение.*полового/i.test(text)) return 'Potenz und Libido'
-  if (/(паразит|parasite|антипаразитар|глист|helminth|worms|antiparasit)/i.test(text)) return 'Immununterstützung'
+  if (/(варикоз|varicose|веноз|вены|venous|vein|veins|антиварикоз|anti[- ]?varicose|krampfadern|уход.*ног|ноги)/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Pflege für die Füße', product)
+  if (/омолаживающ|rejuvenation|anti[- ]?age|antiage|морщин|collagen|hyaluronic|peptides|крем.*кож|кожа.*крем|anti[- ]?age cream|skin ageing/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Anti-Aging-Pflege', product)
+  if (/зрение|глаз|слух|офтальм|vision|eye|retina|audi|optic|опти/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Hören und Gleichgewicht', product)
+  if (/простат|потенц|эрект|тестостерон|libido|male health|men health|androlog|увеличение.*члена|увеличение.*полового/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Potenz und Libido', product)
+  if (/(паразит|parasite|антипаразитар|глист|helminth|worms|antiparasit)/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Immunität und allgemeine Gesundheit', product)
 
   const rawSubcategory = product?.subcategory || product?.ai_classification?.subcategory_label || ''
   if (rawSubcategory && String(rawSubcategory).trim()) {
     const candidate = normalizeSubcategoryCandidate(String(rawSubcategory).trim())
-    if (/(варикоз|varicose|venous|vein|вены|антиварикоз|krampfadern|уход.*ног)/i.test(candidate)) return 'Pflege für die Füße'
-    if (/простат|male health|prostate|potency|libido|эрект|тестостерон|увеличение.*эрекция|увеличение.*члена/i.test(candidate)) return 'Potenz und Libido'
-    if (/антивозраст|rejuvenation|крем.*кож|anti[- ]?age|ageing|antiage|кожа.*крем|уход.*кож/i.test(candidate)) return 'Anti-Aging-Pflege'
-    if (/(паразит|parasite|антипаразитар|глист)/i.test(candidate)) return 'Immununterstützung'
-    if (/кожа|дерма|крем|beauty/i.test(candidate)) return 'Anti-Aging-Pflege'
-    if (/потенц|эрект|тестостерон|libido|увеличение и эрекция|potency/i.test(candidate)) return 'Potenz und Libido'
-    if (/простатит.*мужское.*здоровье|simple.*male.*health|male.*health/i.test(candidate)) return 'Prostatitis und Männergesundheit'
-    return candidate
+    return pickCanonicalSubcategory(categorySlug, candidate, product)
   }
 
-  if (/потенц|эрект|тестостерон|libido|увеличение.*члена|увеличение.*полового/i.test(text)) return 'Potenz und Libido'
-  if (/нейропат|нерв/.test(text)) return 'Nervensystem'
-  if (/слух|уха|ауди/.test(text)) return 'Sehen und Hören'
-  if (/сустав|артро|хондро|вальгус/.test(text)) return 'Gesundheit der Gelenke'
-  if (/гиперто|сердц|давлен|кардио/.test(text)) return 'Herz und Blutdruck'
-  if (/диабет|глюкоз|сахар/.test(text)) return 'Diabetes und Stoffwechsel'
-  if (/жкт|желуд|пищевар|гастро|кишеч|токсины|шлаки/.test(text)) return 'Verdauung und Reinigung'
-  if (/похуд|вес|стройн|жир|сжиган/.test(text)) return 'Gewichtsverlust und Gewichtsmanagement'
-  if (/цистит|моче|почек/.test(text)) return 'Urogenitalsystem'
-  if (/геморро/.test(text)) return 'Hämorrhoiden'
-  if (/боли в суставах|боль.*сустав/.test(text)) return 'Gelenkschmerzen'
-  if (/антивозраст|rejuvenation| anti[- ]?age |aging|крем.*кож/i.test(text)) return 'Anti-Aging-Pflege'
-  if (product?.subcategory) return normalizeSubcategoryCandidate(String(product.subcategory).trim()) || 'Allgemeine Gesundheit'
-  return 'Allgemeine Gesundheit'
+  if (/потенц|эрект|тестостерон|libido|увеличение.*члена|увеличение.*полового/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Potenz und Libido', product)
+  if (/нейропат|нерв/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Nervensystem', product)
+  if (/слух|уха|ауди/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Hören und Gleichgewicht', product)
+  if (/сустав|артро|хондро|вальгус/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Gelenke und Bewegungsapparat', product)
+  if (/гиперто|сердц|давлен|кардио/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Herz und Blutdruck', product)
+  if (/диабет|глюкоз|сахар/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Stoffwechsel und Diabetes', product)
+  if (/жкт|желуд|пищевар|гастро|кишеч|токсины|шлаки/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Verdauung und Magen-Darm', product)
+  if (/похуд|вес|стройн|жир|сжиган/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Gewichtsverlust und Detox', product)
+  if (/цистит|моче|почек/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Urogenitalsystem', product)
+  if (/геморро/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Prostata und Harnwege', product)
+  if (/боли в суставах|боль.*сустав/.test(text)) return pickCanonicalSubcategory(categorySlug, 'Gelenke und Bewegungsapparat', product)
+  if (/антивозраст|rejuvenation| anti[- ]?age |aging|крем.*кож/i.test(text)) return pickCanonicalSubcategory(categorySlug, 'Anti-Aging-Pflege', product)
+  if (product?.subcategory) return pickCanonicalSubcategory(categorySlug, product.subcategory, product)
+  return pickCanonicalSubcategory(categorySlug, '', product)
 }
 
 export function buildSubcategoryRouteSlug(value = '') {
@@ -336,10 +471,11 @@ export function filterProductsByQuery(products = [], query = '') {
 
 export function normalizeProductRecord(product = {}) {
   const cleaned = { ...(product || {}) }
+  const explicitCategory = String(cleaned?.category || '').trim()
   const family = inferFamilyCategory(cleaned)
   const familySlug = family?.slug || 'immune'
-  cleaned.category = familySlug
-  cleaned.subcategory = inferSubcategoryLabel(cleaned)
+  cleaned.category = explicitCategory || familySlug
+  cleaned.subcategory = String(cleaned?.subcategory || '').trim() || inferSubcategoryLabel(cleaned)
 
   if (cleaned.ai_classification && typeof cleaned.ai_classification === 'object') {
     cleaned.ai_classification = {

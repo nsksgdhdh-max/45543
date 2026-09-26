@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 const productsPath = path.join(process.cwd(), 'data', 'specific_products.json')
 
@@ -24,6 +24,8 @@ export default function handler(req, res) {
     product,
     id,
     partner_id: partnerId,
+    category,
+    subcategory,
     top,
     main_offer: mainOffer,
     is_new: isNew,
@@ -33,6 +35,7 @@ export default function handler(req, res) {
     seo_title_template: seoTitleTemplate,
     seo_description_template: seoDescriptionTemplate,
     delete: shouldDelete,
+    name,
   } = req.body || {}
 
   const products = readProducts()
@@ -94,11 +97,28 @@ export default function handler(req, res) {
     return res.status(400).json({ error: 'Product id is required' })
   }
 
-  const resolveKey = (product) => `${String(product.partner_id || 'metacpa_default')}:${String(product.id || product.product_id)}`
-  const targetKey = `${String(partnerId || 'metacpa_default')}:${String(id)}`
+  const resolvePartner = (value) => String(value || 'metacpa_default')
+  const targetPartner = resolvePartner(partnerId)
+  const targetId = String(id)
+  const matchesById = (product) => {
+    const productPartner = resolvePartner(product.partner_id)
+    const productId = String(product.id || '')
+    const productProductId = String(product.product_id || '')
+    return (productId === targetId || productProductId === targetId) && productPartner === targetPartner
+  }
+  const hasStrictMatch = products.some((product) => matchesById(product))
+  const matchesTarget = (product) => {
+    if (hasStrictMatch) return matchesById(product)
+    const productId = String(product.id || '')
+    const productProductId = String(product.product_id || '')
+    return productId === targetId || productProductId === targetId
+  }
 
   if (shouldDelete === true || shouldDelete === 1 || shouldDelete === 'true') {
-    const nextProducts = products.filter((product) => resolveKey(product) !== targetKey)
+    if (!products.some((product) => matchesTarget(product))) {
+      return res.status(404).json({ error: 'Product not found' })
+    }
+    const nextProducts = products.filter((product) => !matchesTarget(product))
 
     fs.mkdirSync(path.dirname(productsPath), { recursive: true })
     fs.writeFileSync(productsPath, `${JSON.stringify(nextProducts, null, 2)}\n`)
@@ -109,9 +129,19 @@ export default function handler(req, res) {
   const nextTopValue = top !== undefined && top !== null ? (Number(top) === 1 ? 1 : 0) : undefined
   const incomingMainOffer = mainOffer !== undefined && mainOffer !== null ? (Number(mainOffer) === 1 ? 1 : 0) : undefined
   const incomingNewFlag = isNew !== undefined && isNew !== null ? (Number(isNew) === 1 ? 1 : 0) : newFlag !== undefined && newFlag !== null ? (Number(newFlag) === 1 ? 1 : 0) : undefined
+  const nextCategoryValue = category !== undefined && category !== null ? String(category) : undefined
+  const nextSubcategoryValue = subcategory !== undefined && subcategory !== null ? String(subcategory) : undefined
+  const nextNameValue = name !== undefined && name !== null ? String(name).trim() : undefined
+
+  if (nextNameValue !== undefined && !nextNameValue) {
+    return res.status(400).json({ error: 'Product name is required' })
+  }
+  if (!products.some((product) => matchesTarget(product))) {
+    return res.status(404).json({ error: 'Product not found' })
+  }
 
   const nextProducts = products.map((product) => {
-    const isTarget = resolveKey(product) === targetKey
+    const isTarget = matchesTarget(product)
     const nextProduct = { ...product }
 
     if (nextTopValue !== undefined) {
@@ -132,6 +162,14 @@ export default function handler(req, res) {
     }
 
     if (isTarget) {
+      if (nextCategoryValue !== undefined) {
+        nextProduct.category = nextCategoryValue
+      }
+
+      if (nextSubcategoryValue !== undefined) {
+        nextProduct.subcategory = nextSubcategoryValue
+      }
+
       const resolvedTitleTemplate = titleTemplate ?? seoTitleTemplate
       const resolvedDescriptionTemplate = descriptionTemplate ?? seoDescriptionTemplate
 
@@ -143,6 +181,10 @@ export default function handler(req, res) {
       if (resolvedDescriptionTemplate !== undefined) {
         nextProduct.description_template = resolvedDescriptionTemplate
         nextProduct.seo_description_template = resolvedDescriptionTemplate
+      }
+
+      if (nextNameValue !== undefined) {
+        nextProduct.name = nextNameValue
       }
     }
 

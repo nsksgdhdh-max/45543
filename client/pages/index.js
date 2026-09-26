@@ -1,12 +1,14 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import Head from 'next/head'
 import Header from '../components/Header'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import products from '../data/specific_products.json'
 import { addToCartAndGo } from '../lib/cart'
 import { buildCatalogGroups } from '../lib/catalog'
 import { readNews } from '../lib/news'
 import { buildProductUrl, resolveProductImage } from '../lib/product'
+import { buildFaqSchema, buildWebPageSchema } from '../lib/schema'
 
 const CANONICAL_BASE = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -25,24 +27,6 @@ function priceForDE(item) {
   if (!de) return 'Preis auf Anfrage'
   return `${de.price || ''} ${de.currency || ''}`.trim()
 }
-
-const categories = buildCatalogGroups(products)
-const rankedCategories = [...categories].sort((a, b) => (b.count || 0) - (a.count || 0) || String(a.name).localeCompare(String(b.name)))
-const visibleCategoryCards = [
-  ...rankedCategories.filter((category) => category.slug === 'skin'),
-  ...rankedCategories.filter((category) => category.slug !== 'skin').slice(0, 7),
-]
-
-const featuredBase = (products || []).filter((item) => Number(item.top) === 1)
-const featured = (featuredBase.length ? featuredBase : (products || [])).map((item) => ({
-  ...item,
-  displayPrice: priceForDE(item),
-}))
-const heroOffer = (products || []).find((item) => Number(item.main_offer) === 1)
-  || (products || []).find((item) => Number(item.top) === 1)
-  || (products || [])[0]
-const heroOfferPrice = heroOffer ? priceForDE(heroOffer) : 'Preis auf Anfrage'
-const heroIsNew = Number(heroOffer?.main_offer) === 1 || Number(heroOffer?.new) === 1
 
 const homepageFaq = [
   { question: 'Wie funktioniert eine Bestellung bei LebensKraft?', answer: 'Sie wählen ein Produkt aus, senden eine Anfrage und unser Team nimmt anschließend persönlich Kontakt mit Ihnen auf. Danach besprechen wir die Bestellung, die Lieferdetails und alle offenen Fragen, bevor der Kauf finalisiert wird.' },
@@ -67,16 +51,58 @@ const homepageFaq = [
   { question: 'Warum sollten ich mit LebensKraft zusammenarbeiten?', answer: 'Weil wir Wert auf Klarheit, Transparenz und persönliche Beratung legen. Für Sie bedeutet das: weniger Verwirrung, verständlichere Informationen und ein sichererer Weg bei der Auswahl eines passenden Produkts.' },
 ]
 
-export default function Home({ news = [] }) {
+export default function Home({ news = [], products = [] }) {
   const router = useRouter()
   const canonicalUrl = `${CANONICAL_BASE}/`
+  const categories = buildCatalogGroups(products)
+  const rankedCategories = [...categories].sort((a, b) => (b.count || 0) - (a.count || 0) || String(a.name).localeCompare(String(b.name)))
+  const visibleCategoryCards = [
+    ...rankedCategories.filter((category) => category.slug === 'skin'),
+    ...rankedCategories.filter((category) => category.slug !== 'skin').slice(0, 7),
+  ]
+  const featuredBase = (products || []).filter((item) => Number(item.top) === 1)
+  const featured = (featuredBase.length ? featuredBase : (products || [])).map((item) => ({
+    ...item,
+    displayPrice: priceForDE(item),
+  }))
+  const heroOffer = (products || []).find((item) => Number(item.main_offer) === 1)
+    || (products || []).find((item) => Number(item.top) === 1)
+    || (products || [])[0]
+  const heroOfferPrice = heroOffer ? priceForDE(heroOffer) : 'Preis auf Anfrage'
+  const heroIsNew = Number(heroOffer?.main_offer) === 1 || Number(heroOffer?.new) === 1
+  const homeTitle = 'Ewige Vitalität — Gesundheit, Schönheit und Wohlbefinden'
+  const homeDescription = 'Ewige Vitalität ist ein Gesundheits-Shop mit Produkten für Gesundheit, Wohlbefinden und Alltag in Deutschland.'
+  const homeImage = `${CANONICAL_BASE}/img/placeholder.svg`
+  const homePageSchema = buildWebPageSchema({
+    name: homeTitle,
+    description: homeDescription,
+    url: canonicalUrl,
+  })
+  const homeFaqSchema = buildFaqSchema(homepageFaq.slice(0, 8))
 
   return (
     <>
       <Head>
-        <title>Ewige Vitalität — Gesundheit, Schönheit und Wohlbefinden</title>
-        <meta name="description" content="Ewige Vitalität ist ein Gesundheits-Shop mit Produkten für Gesundheit, Wohlbefinden und Alltag in Deutschland." />
+        <title>{homeTitle}</title>
+        <meta name="description" content={homeDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={homeTitle} />
+        <meta property="og:description" content={homeDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={homeImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={homeTitle} />
+        <meta name="twitter:description" content={homeDescription} />
+        <meta name="twitter:image" content={homeImage} />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqSchema) }}
+        />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-900">
@@ -409,10 +435,21 @@ export default function Home({ news = [] }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
+  const file = path.join(process.cwd(), 'data', 'specific_products.json')
+  let products = []
+  try {
+    const raw = fs.readFileSync(file, 'utf8')
+    const parsed = JSON.parse(raw || '[]')
+    products = Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    products = []
+  }
+
   return {
     props: {
       news: readNews().slice(0, 3),
+      products,
     },
   }
 }
