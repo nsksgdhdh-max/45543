@@ -582,8 +582,8 @@ export default function AdminPage({ list, news, products, partners, categories }
     { id: 'top-products', label: 'Топ товары', count: productList.filter((item) => Number(item.top) === 1).length },
     { id: 'seo-agent', label: 'SEO-Agent', count: seoAgentDrafts.length },
   ]
-  const categorySlugSet = new Set(categoryList.map((category) => String(category.slug || '')))
-  const uncategorizedProducts = productList.filter((product) => !categorySlugSet.has(String(product.category || '')))
+  const productsAvailableForCategory = (categorySlug) =>
+    productList.filter((product) => String(product.category || '') !== String(categorySlug || ''))
 
   useEffect(() => {
     setProductAssignmentDrafts((prev) => {
@@ -1042,11 +1042,11 @@ export default function AdminPage({ list, news, products, partners, categories }
 
                         <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
                           <div className="text-sm font-semibold text-slate-900">Добавить товары в эту категорию</div>
-                          {uncategorizedProducts.length === 0 ? (
-                            <div className="mt-2 text-xs text-slate-500">Нет товаров без категории. Все товары уже распределены.</div>
+                          {productsAvailableForCategory(category.slug).length === 0 ? (
+                            <div className="mt-2 text-xs text-slate-500">Нет товаров для добавления в эту категорию. Все товары уже привязаны к другим категориям или уже здесь.</div>
                           ) : (
                             <div className="mt-3 space-y-2">
-                              {uncategorizedProducts.slice(0, 25).map((product) => (
+                              {productsAvailableForCategory(category.slug).slice(0, 25).map((product) => (
                                 <div key={`${category.slug}-out-${product.id || product.product_id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
                                   <div className="min-w-0">
                                     <div className="truncate text-sm font-medium text-slate-900">{product.name || 'Без названия'}</div>
@@ -1061,8 +1061,8 @@ export default function AdminPage({ list, news, products, partners, categories }
                                   </button>
                                 </div>
                               ))}
-                              {uncategorizedProducts.length > 25 && (
-                                <div className="text-xs text-slate-500">Показано 25 из {uncategorizedProducts.length} товаров без категории.</div>
+                              {productsAvailableForCategory(category.slug).length > 25 && (
+                                <div className="text-xs text-slate-500">Показано 25 из {productsAvailableForCategory(category.slug).length} товаров.</div>
                               )}
                             </div>
                           )}
