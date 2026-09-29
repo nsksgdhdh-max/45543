@@ -1,0 +1,58 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      SSH_HOST: ${{ secrets.VPS_HOST || '31.77.160.39' }}
+      SSH_PORT: ${{ secrets.VPS_PORT || '22' }}
+      SSH_USER: ${{ secrets.VPS_USER || 'root' }}
+      SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      DEPLOY_REPO: ${{ secrets.VPS_DEPLOY_REPO || 'ssh://root@31.77.160.39/root/ewige-vitalitaet.git' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Configure SSH key
+        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Push to VPS bare repo
+        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        shell: bash
+        run: |
+          set -e
+          git remote remove deploy 2>/dev/null || true
+          git remote add deploy "$DEPLOY_REPO"
+          git push deploy HEAD:main
+
+      - name: Verify deployment target
+        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        shell: bash
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -p "$SSH_PORT" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "git --git-dir=/root/ewige-vitalitaet.git rev-parse HEAD && pm2 list | grep -i ewige-vitalitaet || true"
