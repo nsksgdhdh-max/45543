@@ -90,7 +90,7 @@ export default function Home({ news = [] }) {
             </span>
 
             <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:mt-6 sm:text-4xl lg:text-5xl">
-              Ihr Shop für Gesundheit, Schönheit und Wohlbefinden in Deutschland
+              Vitamine, Wellness und Gesundheit — für jeden Tag
             </h1>
 
             <p className="mt-4 max-w-xl text-base text-slate-600 sm:text-lg">
