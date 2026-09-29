@@ -32,7 +32,7 @@ jobs:
         run: npm run build
 
       - name: Configure SSH key
-        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        if: ${{ env.SSH_KEY != '' }}
         shell: bash
         run: |
           mkdir -p ~/.ssh
@@ -43,7 +43,7 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
 
       - name: Push to VPS bare repo
-        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        if: ${{ env.SSH_KEY != '' }}
         shell: bash
         run: |
           set -e
@@ -52,7 +52,7 @@ jobs:
           git push deploy HEAD:main
 
       - name: Verify deployment target
-        if: ${{ secrets.VPS_SSH_KEY != '' }}
+        if: ${{ env.SSH_KEY != '' }}
         shell: bash
         run: |
           ssh -i ~/.ssh/id_ed25519 -p "$SSH_PORT" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "git --git-dir=/root/ewige-vitalitaet.git rev-parse HEAD && pm2 list | grep -i ewige-vitalitaet || true"
